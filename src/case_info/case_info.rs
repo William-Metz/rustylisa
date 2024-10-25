@@ -2,6 +2,8 @@ use core::f64;
 use crate::constants::{YEAR, G, VE, GM_OMEGA_E};
 use std::f64::consts::PI;
 //src/case_info/case_info.rs
+
+#[derive(Clone)] // Add this line to automatically implement Clone
 pub struct Case_Info{
     pub Uncertainties: [f64;15],
     pub Beta: f64,

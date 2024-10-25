@@ -1,10 +1,16 @@
 use core::f64;
 
+use crate::{spin_evolver::spin_evolver::SpinEvolverClass, test_case::test_case::TestCase};
+
 // src/wave_builder/wave_builder.rs 
+#[derive(Clone,PartialEq,Debug)]
 pub struct Wave_Builder{
     pub lotaDN: f64, 
     pub beta_: f64, 
     pub delta: f64, 
+    pub delta_tau_r: f64,
+    pub Spin_Evolver: SpinEvolverClass,
+    pub tau_rDN: f64,
     pub eta: f64, 
     pub pi: f64, 
     pub chiaxDN: f64, 
@@ -14,6 +20,8 @@ pub struct Wave_Builder{
     pub chisyDN: f64, 
     pub chiszDN: f64, 
     pub PsirDN: f64,
+    pub PsirDP: f64,
+    pub PsiP: f64,
     pub AlphaDN: f64,
     pub PNOrder: u8, //Remove later
     pub W: [f64;248],
@@ -25,12 +33,15 @@ pub struct Wave_Builder{
 } 
 
 
-impl Default for Wave_Builder {
-    fn default() -> Self {
+impl Wave_Builder {
+    pub fn new(c_info: &TestCase) -> Self {
         Wave_Builder {
             lotaDN: 0.0,
             beta_: 0.0,
             delta: 0.0,
+            delta_tau_r: 0.0,
+            Spin_Evolver: SpinEvolverClass::new(c_info),
+            tau_rDN: 0.0,
             eta: 0.0,
             pi: 0.0,
             chiaxDN: 0.0,
@@ -40,6 +51,8 @@ impl Default for Wave_Builder {
             chisyDN: 0.0,
             chiszDN: 0.0,
             PsirDN: 0.0,
+            PsirDP: 0.0,
+            PsiP: 0.0,
             PNOrder: 10,
             AlphaDN:0.0,
             W: [0.0; 248], 
@@ -49,6 +62,7 @@ impl Default for Wave_Builder {
             Sin_Ap_Psi: [[0.0; 6]; 6],
 
         }
+
     }
 }
 

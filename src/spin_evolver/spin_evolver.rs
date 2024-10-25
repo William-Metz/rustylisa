@@ -1,8 +1,11 @@
 use core::f64;
+use crate::vcalculator::vcalculator::VCalculator;
 use crate::test_case::test_case::TestCase;
+use crate::spin_data::spin_data::SpinData;
 use std::f64::consts::PI;
-
-struct SpinEvolverClass {
+use libm::atan2;
+#[derive(Clone,PartialEq,Debug)]
+pub struct SpinEvolverClass {
     C10: f64,
     C12: f64,
     C14: f64,
@@ -18,17 +21,17 @@ struct SpinEvolverClass {
     P: TestCase,
     S_ell_: f64,
     V0: f64,
-    //    VCalc: VCalculatorClass,
+    VCalc: VCalculator,
     iota_N: f64,
     iota_P: f64,
     alphaN: f64,
     alphaP: f64,
-    ΔtuahF: f64,
-    ΔtuahP: f64,
-    η: f64,
+    delta_tau_hF: f64,
+    delta_tau_h_P: f64,
+    nu: f64,
     simga_ell_: f64,
-    tuaN: f64,
-    tuaP: f64,
+    tauN: f64,
+    tauP: f64,
     chi1xN: f64,
     chi1xP: f64,
     chi1yN: f64,
@@ -54,7 +57,7 @@ struct SpinEvolverClass {
 }
 
 impl SpinEvolverClass {
-    fn new(c_info: CaseInfoClass) -> Self {
+    pub fn new(c_info: &TestCase) -> Self {
         let mut spin_evolver = Self {
             C10: 0.0,
             C12: 0.0,
@@ -68,20 +71,20 @@ impl SpinEvolverClass {
             NalphaCycles: 0,
             Omdelta2I4: 0.0,
             Opdelta2I4: 0.0,
-            P: c_info,
+            P: c_info.clone(),
             S_ell_: 0.0,
             V0: 0.0,
-            //           VCalc: VCalculatorClass::new(0.0, 0.0, 0.0, 0.0),
+            VCalc: VCalculator::new(0.0, 0.0, 0.0, 0.0),
             iota_N: 0.0,
             iota_P: 0.0,
             alphaN: 0.0,
             alphaP: 0.0,
-            ΔtuahF: 0.0,
-            ΔtuahP: 0.0,
-            η: 0.0,
+            delta_tau_hF: 0.0,
+            delta_tau_h_P: 0.0,
+            nu: 0.0,
             simga_ell_: 0.0,
-            tuaN: 0.0,
-            tuaP: 0.0,
+            tauN: 0.0,
+            tauP: 0.0,
             chi1xN: 0.0,
             chi1xP: 0.0,
             chi1yN: 0.0,
@@ -108,196 +111,249 @@ impl SpinEvolverClass {
 
         if c_info.chi1 == 0.0 && c_info.chi2 == 0.0 {
             // No spins, initialize VCalc and get V0 value
-            spin_evolver.VCalc = VCalculatorClass::new(c_info.tuac, c_info.delta, 0.0, 0.0);
-            spin_evolver.V0 = spin_evolver.VCalc.VAtTime(0.0);
+            spin_evolver.VCalc = VCalculator::new(c_info.tau_c, c_info.delta, 0.0, 0.0);
+            spin_evolver.V0 = spin_evolver.VCalc.v_at_time(0.0);
         } else {
             // Initialize with spins, set up the spin coefficients and other calculations
             // Start with basic setup
-            let delta: f64 = P.delta;
-            η = 0.25*(1 - delta*delta);
-            let η2: f64 = η*η;
-            let η3: f64 = η2*η;
+            let nu = 0.25*(1.0 - c_info.delta*c_info.delta);
+            let nu2: f64 = nu*nu;
+            let nu3: f64 = nu2*nu;
 
             // Calculate spin evolution coefficients
-            C10 = 0.75*(1.0 - delta) + 0.5*η;
-            C20 = 0.75*(1.0 + delta) + 0.5*η;
-            C12 = 9/16 + 5/4*η - η2/24 + delta*(-9/16 + 5/8*η);
-            C22 = 9/16 + 5/4*η - η2/24 - delta*(-9/16 + 5/8*η);
-            C14 = 27/32 + 3/16*η - 105/32*η2 - η3/48 + delta*(-27/32 + 39/8*η -5/32*η2);
-            C24 = 27/32 + 3/16*η - 105/32*η2 - η3/48 - delta*(-27/32 + 39/8*η -5/32*η2);
+            spin_evolver.C10 = 0.75*(1.0 - c_info.delta) + 0.5*nu;
+            spin_evolver.C20 = 0.75*(1.0 + c_info.delta) + 0.5*nu;
+            spin_evolver.C12 = 9.0/16.0 + 5.0/4.0*nu - nu2/24.0 + c_info.delta*(-9.0/16.0 + 5.0/8.0*nu);
+            spin_evolver.C22 = 9.0/16.0 + 5.0/4.0*nu - nu2/24.0 - c_info.delta*(-9.0/16.0 + 5.0/8.0*nu);
+            spin_evolver.C14 = 27.0/32.0 + 3.0/16.0*nu - 105.0/32.0*nu2 - nu3/48.0 + c_info.delta*(-27.0/32.0 + 39.0/8.0*nu -5.0/32.0*nu2);
+            spin_evolver.C24 = 27./32.0 + 3.0/16.0*nu - 105.0/32.0*nu2 - nu3/48.0 - c_info.delta*(-27.0/32.0 + 39.0/8.0*nu -5.0/32.0*nu2);
 
             // Calculate orbital AM magnitude coefficients
-            Opdelta2I4 = 0.25*(1.0 + delta)*(1.0 + delta);
-            Omdelta2I4 = 0.25*(1.0 - delta)*(1.0 - delta);
-            chi1ell_ = P.chi1*Cos(P.θ1);
-            chi2ell_ = P.chi2*Cos(P.θ2);
-            S_ell_ = Opdelta2I4*chi1ell_ + Omdelta2I4*chi2ell_;
-            simga_ell_ = 0.5*(1.0 - delta)*chi2ell_ - 0.5*(1.0 + delta)*chi1ell_;
-            L2 = 3/2 + η/6;
-            L3 = -35/6*S_ell_-5/2*delta*simga_ell_;
-            L4 = 27/8 - 19/8*η + η2/24;
+            spin_evolver.Opdelta2I4 = 0.25*(1.0 + c_info.delta)*(1.0 + c_info.delta);
+            spin_evolver.Omdelta2I4 = 0.25*(1.0 - c_info.delta)*(1.0 - c_info.delta);
+
+            spin_evolver.chi1ell_ = c_info.chi1*((c_info.theta_1).cos());
+            spin_evolver.chi2ell_ = c_info.chi2*((c_info.Theta2).cos());
+            spin_evolver.S_ell_ = spin_evolver.Opdelta2I4*spin_evolver.chi1ell_ + spin_evolver.Omdelta2I4*spin_evolver.chi2ell_;
+            spin_evolver.simga_ell_ = 0.5*(1.0 - c_info.delta)*spin_evolver.chi2ell_ - 0.5*(1.0 + c_info.delta)*spin_evolver.chi1ell_;
+            spin_evolver.L2 = 3.0/2.0 + nu/6.0;
+            spin_evolver.L3 = -35.0/6.0*spin_evolver.S_ell_-5.0/2.0*c_info.delta*spin_evolver.simga_ell_;
+            spin_evolver.L4 = 27.0/8.0 - 19.0/8.0*nu + nu2/24.0;
 
             // Initialize the velocity calculator
-            //VCalc = New VCalculatorClass(P.tuac, delta, chi1ell_, chi2ell_)
+            //VCalc = New VCalculatorClass(P.tauc, c_info.delta, chi1ell_, chi2ell_)
 
             // Calculate the initial orbital angular momentum magnitude
-            V0 = VCalc.VAtTime(0.0);
-            let v2: f64 = V0*V0;
-            let v3: f64 = v2*V0;
-            let v4: f64 = v3*V0;
-            let v5: f64 = v4*V0;
-            let L0: f64 = η/V0*(1.0 + L2*v2 + L3*v3 + L4*v4);
+            spin_evolver.V0 = spin_evolver.VCalc.v_at_time(0.0);
+            let mut v2: f64 = spin_evolver.V0*spin_evolver.V0;
+            let mut v3: f64 = v2*spin_evolver.V0;
+            let mut v4: f64 = v3*spin_evolver.V0;
+            let mut v5: f64 = v4*spin_evolver.V0;
+            let mut L0: f64 = nu/spin_evolver.V0*(1.0 + spin_evolver.L2*v2 + spin_evolver.L3*v3 + spin_evolver.L4*v4);
 
             // Calculate spin components in the precessing frame
-            let chi1xL: f64 = P.chi1*Sin(P.θ1)*Cos(P.φ1);
-            let chi1yL: f64 = P.chi1*Sin(P.θ1)*Sin(P.φ1);
-            let chi1zL: f64 = chi1ell_;
-            let chi2xL: f64 = P.chi2*Sin(P.θ2)*Cos(P.φ2);
-            let chi2yL: f64 = P.chi2*Sin(P.θ2)*Sin(P.φ2);
-            let chi2zL: f64 = chi2ell_;
+            let chi1xL: f64 = spin_evolver.P.chi1*(spin_evolver.P.theta_1).sin()*(spin_evolver.P.Phi1).cos();
+            let chi1yL: f64 = spin_evolver.P.chi1*(spin_evolver.P.theta_1).sin()*(spin_evolver.P.Phi1).sin();
+            let chi1zL: f64 = spin_evolver.chi1ell_;
+            let chi2xL: f64 = spin_evolver.P.chi2*(spin_evolver.P.Theta2).sin()*(spin_evolver.P.Phi2).cos();
+            let chi2yL: f64 = spin_evolver.P.chi2*(spin_evolver.P.Theta2).sin()*(spin_evolver.P.Phi2).sin();
+            let chi2zL: f64 = spin_evolver.chi2ell_;
 
             // Calculate total angular momentum components in the precessing frame
-            let j0x: f64 = Opdelta2I4*chi1xL + Omdelta2I4*chi2xL;
-            let j0y: f64 = Opdelta2I4*chi1yL + Omdelta2I4*chi2yL;
-            let j0z: f64 = Opdelta2I4*chi1zL + Omdelta2I4*chi2zL + L0;
-            ;
+            let j0x: f64 = spin_evolver.Opdelta2I4*chi1xL + spin_evolver.Omdelta2I4*chi2xL;
+            let j0y: f64 = spin_evolver.Opdelta2I4*chi1yL + spin_evolver.Omdelta2I4*chi2yL;
+            let j0z: f64 = spin_evolver.Opdelta2I4*chi1zL + spin_evolver.Omdelta2I4*chi2zL + L0;
+
             // Calculate rotation matrix
-            let θ0: f64 = ATan2(j0z, Sqrt(j0x*j0x+j0y*j0y));
-            let φ0: f64 = ATan2(j0y, j0x);
-            let rxx: f64 = Cos(θ0)*Cos(φ0);
-            let rxy: f64 = Cos(θ0)*Sin(φ0);
-            let rxz: f64 = -Sin(θ0);
-            let ryx: f64 = -Sin(φ0);
-            let ryy: f64 = Cos(φ0);
+            let θ0: f64 = atan2(j0z, (j0x*j0x+j0y*j0y).sqrt());
+            let φ0: f64 = atan2(j0y, j0x);
+            let rxx: f64 = (θ0).cos()*(φ0).cos();
+            let rxy: f64 = (θ0).cos()*(φ0).sin();
+            let rxz: f64 = -(θ0).sin();
+            let ryx: f64 = -(φ0).sin();
+            let ryy: f64 = (φ0).cos();
             let ryz: f64 = 0.0;
-            let rzx: f64 = Sin(θ0)*Cos(φ0);
-            let rzy: f64 = Sin(θ0)*Sin(φ0);
-            let rzz: f64 = Cos(θ0);
+            let rzx: f64 = (θ0).sin()*(φ0).cos();
+            let rzy: f64 = (θ0).sin()*(φ0).sin();
+            let rzz: f64 = (θ0).cos();
 
             // Calculate initial values for the spin vector components
-            chi1xP = rxx*chi1xL + rxy*chi1yL  + rxz*chi1zL;
-            chi1yP = ryx*chi1xL + ryy*chi1yL  + ryz*chi1zL;
-            chi1zP = rzx*chi1xL + rzy*chi1yL  + rzz*chi1zL;
-            chi2xP = rxx*chi2xL + rxy*chi2yL  + rxz*chi2zL;
-            chi2yP = ryx*chi2xL + ryy*chi2yL  + ryz*chi2zL;
-            chi2zP = rzx*chi2xL + rzy*chi2yL  + rzz*chi2zL;
+            spin_evolver.chi1xP = rxx*chi1xL + rxy*chi1yL  + rxz*chi1zL;
+            spin_evolver.chi1yP = ryx*chi1xL + ryy*chi1yL  + ryz*chi1zL;
+            spin_evolver.chi1zP = rzx*chi1xL + rzy*chi1yL  + rzz*chi1zL;
+            spin_evolver.chi2xP = rxx*chi2xL + rxy*chi2yL  + rxz*chi2zL;
+            spin_evolver.chi2yP = ryx*chi2xL + ryy*chi2yL  + ryz*chi2zL;
+            spin_evolver.chi2zP = rzx*chi2xL + rzy*chi2yL  + rzz*chi2zL;
 
             // Calculate intial values for the orbital angular momentum components and angles
-            ell_xP = rxz*L0;
-            ell_yP = ryz*L0;
-            ell_zP = rzz*L0;
-            alphaP = Atan2(ell_yP,ell_xP);
-            iota_P = Atan2(ell_zP,Sqrt(ell_xP*ell_xP + ell_yP*ell_yP));
+            spin_evolver.ell_xP = rxz*L0;
+            spin_evolver.ell_yP = ryz*L0;
+            spin_evolver.ell_zP = rzz*L0;
+            spin_evolver.alphaP = atan2(spin_evolver.ell_yP,spin_evolver.ell_xP);
+            spin_evolver.iota_P = atan2(spin_evolver.ell_zP,(spin_evolver.ell_xP*spin_evolver.ell_xP + spin_evolver.ell_yP*spin_evolver.ell_yP).sqrt());
 
             // Calculate components of the initial spin rate of change
-            let omega_1: f64 = v5*(C10 + C12*v2 + C14*v4)/L0;
-            let chi1xDotP: f64 = omega_1*(ell_yP*chi1zP - ell_zP*chi1yP);
-            let chi1yDotP: f64 = omega_1*(ell_zP*chi1xP - ell_xP*chi1zP);
-            let chi1zDotP: f64 = omega_1*(ell_xP*chi1yP - ell_yP*chi1xP);
-            let omega_2: f64 = v5*(C20 + C22*v2 + C24*v4)/L0;
-            let chi2xDotP: f64 = omega_2*(ell_yP*chi2zP - ell_zP*chi2yP);
-            let chi2yDotP: f64 = omega_2*(ell_zP*chi2xP - ell_xP*chi2zP);
-            let chi2zDotP: f64 = omega_2*(ell_xP*chi2yP - ell_yP*chi2xP);
+            let mut omega_1: f64 = v5*(spin_evolver.C10 + spin_evolver.C12*v2 + spin_evolver.C14*v4)/L0;
+            let chi1xDotP: f64 = omega_1*(spin_evolver.ell_yP*spin_evolver.chi1zP - spin_evolver.ell_zP*spin_evolver.chi1yP);
+            let chi1yDotP: f64 = omega_1*(spin_evolver.ell_zP*spin_evolver.chi1xP - spin_evolver.ell_xP*spin_evolver.chi1zP);
+            let chi1zDotP: f64 = omega_1*(spin_evolver.ell_xP*spin_evolver.chi1yP - spin_evolver.ell_yP*spin_evolver.chi1xP);
+            let mut omega_2: f64 = v5*(spin_evolver.C20 + spin_evolver.C22*v2 + spin_evolver.C24*v4)/L0;
+            let chi2xDotP: f64 = omega_2*(spin_evolver.ell_yP*spin_evolver.chi2zP - spin_evolver.ell_zP*spin_evolver.chi2yP);
+            let chi2yDotP: f64 = omega_2*(spin_evolver.ell_zP*spin_evolver.chi2xP - spin_evolver.ell_xP*spin_evolver.chi2zP);
+            let chi2zDotP: f64 = omega_2*(spin_evolver.ell_xP*spin_evolver.chi2yP - spin_evolver.ell_yP*spin_evolver.chi2xP);
 
             // Calculate the first time step to be half the step that would
             // take 628 steps for the fastest spin to precess once
-            let s1dot: f64 = Sqrt(chi1xDotP*chi1xDotP + chi1yDotP*chi1yDotP + chi1zDotP*chi1zDotP);
-            let s2dot: f64 = Sqrt(chi2xDotP*chi2xDotP + chi2yDotP*chi2yDotP + chi2zDotP*chi2zDotP);
-            if s1dot = 0.0 {
-                ΔtuahP = P.chi2/s2dot}
-            else if s2dot = 0.0 {
-                ΔtuahP = P.chi1/s1dot;
+            let s1dot: f64 = (chi1xDotP*chi1xDotP + chi1yDotP*chi1yDotP + chi1zDotP*chi1zDotP).sqrt();
+            let s2dot: f64 = (chi2xDotP*chi2xDotP + chi2yDotP*chi2yDotP + chi2zDotP*chi2zDotP).sqrt();
+            if s1dot == 0.0 {
+                spin_evolver.delta_tau_h_P = spin_evolver.P.chi2/s2dot}
+            else if s2dot == 0.0 {
+                spin_evolver.delta_tau_h_P = spin_evolver.P.chi1/s1dot;
             }
             else{
-                ΔtuahP = 0.5*Min(P.chi1/s1dot, P.chi2/s2dot);
+                spin_evolver.delta_tau_h_P = 0.5*f64::min(spin_evolver.P.chi1/s1dot, spin_evolver.P.chi2/s2dot);
             }
-            ΔtuahF = ΔtuahP;
+            spin_evolver.delta_tau_hF = spin_evolver.delta_tau_h_P;
 
             // Evolve the spins using an Euler step
-            chi1xN = chi1xP + ΔtuahP*chi1xDotP;
-            chi1yN = chi1yP + ΔtuahP*chi1yDotP;
-            chi1zN = chi1zP + ΔtuahP*chi1zDotP;
-            chi2xN = chi2xP + ΔtuahP*chi2xDotP;
-            chi2yN = chi2yP + ΔtuahP*chi2yDotP;
-            chi2zN = chi2zP + ΔtuahP*chi2zDotP;
+            spin_evolver.chi1xN = spin_evolver.chi1xP + spin_evolver.delta_tau_h_P*chi1xDotP;
+            spin_evolver.chi1yN = spin_evolver.chi1yP + spin_evolver.delta_tau_h_P*chi1yDotP;
+            spin_evolver.chi1zN = spin_evolver.chi1zP + spin_evolver.delta_tau_h_P*chi1zDotP;
+            spin_evolver.chi2xN = spin_evolver.chi2xP + spin_evolver.delta_tau_h_P*chi2xDotP;
+            spin_evolver.chi2yN = spin_evolver.chi2yP + spin_evolver.delta_tau_h_P*chi2yDotP;
+            spin_evolver.chi2zN = spin_evolver.chi2zP + spin_evolver.delta_tau_h_P*chi2zDotP;
 
             // Evolve the orbital angular momentum using an Euler step
-            let ell_DotP: f64 = η*(-1.0/v2 + L2 + 2*L2*v0 + 3*L4*v2)*VCalc.VDotForLastV/L0;
-            let ell_xDotP: f64 = -Opdelta2I4*chi1xDotP - Omdelta2I4*chi2xDotP + ell_DotP*ell_xP;
-            let ell_yDotP: f64 = -Opdelta2I4*chi1yDotP - Omdelta2I4*chi2yDotP + ell_DotP*ell_yP;
-            let ell_zDotP: f64 = -Opdelta2I4*chi1zDotP - Omdelta2I4*chi2zDotP + ell_DotP*ell_zP;
-            ell_xN = ell_xP + ΔtuahP*ell_xDotP;
-            ell_yN = ell_yP + ΔtuahP*ell_yDotP;
-            ell_zN = ell_zP + ΔtuahP*ell_zDotP;
+            let ell_DotP: f64 = nu*(-1.0/v2 + spin_evolver.L2 + 2.0*spin_evolver.L2*spin_evolver.V0 + 3.0*spin_evolver.L4*v2)*spin_evolver.VCalc.v_dot_for_last_v()/L0;
+            let ell_xDotP: f64 = -spin_evolver.Opdelta2I4*chi1xDotP - spin_evolver.Omdelta2I4*chi2xDotP + ell_DotP*spin_evolver.ell_xP;
+            let ell_yDotP: f64 = -spin_evolver.Opdelta2I4*chi1yDotP - spin_evolver.Omdelta2I4*chi2yDotP + ell_DotP*spin_evolver.ell_yP;
+            let ell_zDotP: f64 = -spin_evolver.Opdelta2I4*chi1zDotP - spin_evolver.Omdelta2I4*chi2zDotP + ell_DotP*spin_evolver.ell_zP;
+            spin_evolver.ell_xN = spin_evolver.ell_xP + spin_evolver.delta_tau_h_P*ell_xDotP;
+            spin_evolver.ell_yN = spin_evolver.ell_yP + spin_evolver.delta_tau_h_P*ell_yDotP;
+            spin_evolver.ell_zN = spin_evolver.ell_zP + spin_evolver.delta_tau_h_P*ell_zDotP;
 
             // To get a more precise estimate of the future values, iterate the calculation
             // Calculate the orbital angular momentum magnitude at the first time step
-            let v1: f64 = VCalc.VAtTime(ΔtuahP);
+            let v1: f64 = spin_evolver.VCalc.v_at_time(spin_evolver.delta_tau_h_P);
             v2 = v1*v1;
             v3 = v2*v1;
             v4 = v3*v1;
             v5 = v4*v1;
-            L0  = η/v1*(1.0 + L2*v2 + L3*v3 + L4*v4);
+            L0  = nu/v1*(1.0 + spin_evolver.L2*v2 + spin_evolver.L3*v3 + spin_evolver.L4*v4);
 
             // Calculate components of the future spin rate of change
-            omega_1 = v5*(C10 + C12*v2 + C14*v4)/L0;
-            let chi1xDotN: f64 = omega_1*(ell_yN*chi1zN - ell_zN*chi1yN);
-            let chi1yDotN: f64 = omega_1*(ell_zN*chi1xN - ell_xN*chi1zN);
-            let chi1zDotN: f64 = omega_1*(ell_xN*chi1yN - ell_yN*chi1xN);
-            omega_2 = v5*(C20 + C22*v2 + C24*v4)/L0;
-            let chi2xDotN: f64 = omega_2*(ell_yN*chi2zN - ell_zN*chi2yN);
-            let chi2yDotN: f64 = omega_2*(ell_zN*chi2xN - ell_xN*chi2zN);
-            let chi2zDotN: f64 = omega_2*(ell_xN*chi2yN - ell_yN*chi2xN);
+            omega_1 = v5*(spin_evolver.C10 + spin_evolver.C12*v2 + spin_evolver.C14*v4)/L0;
+            let chi1xDotN: f64 = omega_1*(spin_evolver.ell_yN*spin_evolver.chi1zN - spin_evolver.ell_zN*spin_evolver.chi1yN);
+            let chi1yDotN: f64 = omega_1*(spin_evolver.ell_zN*spin_evolver.chi1xN - spin_evolver.ell_xN*spin_evolver.chi1zN);
+            let chi1zDotN: f64 = omega_1*(spin_evolver.ell_xN*spin_evolver.chi1yN - spin_evolver.ell_yN*spin_evolver.chi1xN);
+            omega_2 = v5*(spin_evolver.C20 + spin_evolver.C22*v2 + spin_evolver.C24*v4)/L0;
+            let chi2xDotN: f64 = omega_2*(spin_evolver.ell_yN*spin_evolver.chi2zN - spin_evolver.ell_zN*spin_evolver.chi2yN);
+            let chi2yDotN: f64 = omega_2*(spin_evolver.ell_zN*spin_evolver.chi2xN - spin_evolver.ell_xN*spin_evolver.chi2zN);
+            let chi2zDotN: f64 = omega_2*(spin_evolver.ell_xN*spin_evolver.chi2yN - spin_evolver.ell_yN*spin_evolver.chi2xN);
 
             // Evolve the spins using a more correct step
-            chi1xN = chi1xP + 0.5*ΔtuahP*(chi1xDotP + chi1xDotN);
-            chi1yN = chi1yP + 0.5*ΔtuahP*(chi1yDotP + chi1yDotN);
-            chi1zN = chi1zP + 0.5*ΔtuahP*(chi1zDotP + chi1zDotN);
-            chi2xN = chi2xP + 0.5*ΔtuahP*(chi2xDotP + chi2xDotN);
-            chi2yN = chi2yP + 0.5*ΔtuahP*(chi2yDotP + chi2yDotN);
-            chi2zN = chi2zP + 0.5*ΔtuahP*(chi2zDotP + chi2zDotN);
+            spin_evolver.chi1xN = spin_evolver.chi1xP + 0.5*spin_evolver.delta_tau_h_P*(chi1xDotP + chi1xDotN);
+            spin_evolver.chi1yN = spin_evolver.chi1yP + 0.5*spin_evolver.delta_tau_h_P*(chi1yDotP + chi1yDotN);
+            spin_evolver.chi1zN = spin_evolver.chi1zP + 0.5*spin_evolver.delta_tau_h_P*(chi1zDotP + chi1zDotN);
+            spin_evolver.chi2xN = spin_evolver.chi2xP + 0.5*spin_evolver.delta_tau_h_P*(chi2xDotP + chi2xDotN);
+            spin_evolver.chi2yN = spin_evolver.chi2yP + 0.5*spin_evolver.delta_tau_h_P*(chi2yDotP + chi2yDotN);
+            spin_evolver.chi2zN = spin_evolver.chi2zP + 0.5*spin_evolver.delta_tau_h_P*(chi2zDotP + chi2zDotN);
 
             // Evolve the orbital angular momentum using a more correct step
-            let ell_DotN: f64 = η*(-1.0/v2 + L2 + 2*L2*v0 + 3*L4*v2)*VCalc.VDotForLastV/L0;
-            let ell_xDotN: f64 = -Opdelta2I4*chi1xDotN - Omdelta2I4*chi2xDotN + ell_DotP*ell_xN;
-            let ell_yDotN: f64 = -Opdelta2I4*chi1yDotN - Omdelta2I4*chi2yDotN + ell_DotP*ell_yN;
-            let ell_zDotN: f64 = -Opdelta2I4*chi1zDotN - Omdelta2I4*chi2zDotN + ell_DotP*ell_zN;
-            ell_xN = ell_xP + 0.5*ΔtuahP*(ell_xDotN + ell_xDotP);
-            ell_yN = ell_yP + 0.5*ΔtuahP*(ell_yDotN + ell_yDotP);
-            ell_zN = ell_zP + 0.5*ΔtuahP*(ell_zDotN + ell_zDotP);
-            alphaN = Atan2(ell_yN,ell_xN);
-            iota_N = Atan2(ell_zN,Sqrt(ell_xN*ell_xN + ell_yN*ell_yN));
+            let ell_DotN: f64 = nu*(-1.0/v2 + spin_evolver.L2 + 2.0*spin_evolver.L2*spin_evolver.P.v0 + 3.0*spin_evolver.L4*v2)*spin_evolver.VCalc.v_dot_for_last_v()/L0;
+            let ell_xDotN: f64 = -spin_evolver.Opdelta2I4*chi1xDotN - spin_evolver.Omdelta2I4*chi2xDotN + ell_DotP*spin_evolver.ell_xN;
+            let ell_yDotN: f64 = -spin_evolver.Opdelta2I4*chi1yDotN - spin_evolver.Omdelta2I4*chi2yDotN + ell_DotP*spin_evolver.ell_yN;
+            let ell_zDotN: f64 = -spin_evolver.Opdelta2I4*chi1zDotN - spin_evolver.Omdelta2I4*chi2zDotN + ell_DotP*spin_evolver.ell_zN;
+            spin_evolver.ell_xN = spin_evolver.ell_xP + 0.5*spin_evolver.delta_tau_h_P*(ell_xDotN + ell_xDotP);
+            spin_evolver.ell_yN = spin_evolver.ell_yP + 0.5*spin_evolver.delta_tau_h_P*(ell_yDotN + ell_yDotP);
+            spin_evolver.ell_zN = spin_evolver.ell_zP + 0.5*spin_evolver.delta_tau_h_P*(ell_zDotN + ell_zDotP);
+            spin_evolver.alphaN = atan2(spin_evolver.ell_yN,spin_evolver.ell_xN);
+            spin_evolver.iota_N = atan2(spin_evolver.ell_zN,(spin_evolver.ell_xN*spin_evolver.ell_xN + spin_evolver.ell_yN*spin_evolver.ell_yN).sqrt());
             // Initialize the precession phase
-            let alphaDotP: f64 = (ell_yP*ell_xDotP - ell_xP*ell_yDotP)/(ell_xDotP*ell_xDotP + ell_yDotP*ell_yDotP);
-            let alphaDotN: f64 = (ell_yN*ell_xDotN - ell_xN*ell_yDotN)/(ell_xDotN*ell_xDotN + ell_yDotN*ell_yDotN);
-            psi_prP = 0.0;
-            psi_prN = -0.5*ΔtuahP*(alphaDotP*Cos(iota_P) + alphaDotN*Cos(iota_N));
+            let alphaDotP: f64 = (spin_evolver.ell_yP*ell_xDotP - spin_evolver.ell_xP*ell_yDotP)/(ell_xDotP*ell_xDotP + ell_yDotP*ell_yDotP);
+            let alphaDotN: f64 = (spin_evolver.ell_yN*ell_xDotN - spin_evolver.ell_xN*ell_yDotN)/(ell_xDotN*ell_xDotN + ell_yDotN*ell_yDotN);
+            spin_evolver.psi_prP = 0.0;
+            spin_evolver.psi_prN = -0.5*spin_evolver.delta_tau_h_P*(alphaDotP*(spin_evolver.iota_P).cos() + alphaDotN*(spin_evolver.iota_N).cos());
 
             // Check to see whether we have crossed the 2nd/3rd quadrant line
-            if ell_yN < 0.0 & ell_yP > 0.0 {
-                if (ell_xN*ell_yP - ell_xP*ell_yN)/(ell_yP-ell_yN) < 0.0 {
-                    NalphaCycles = 1;
+            if spin_evolver.ell_yN < 0.0 && spin_evolver.ell_yP > 0.0 {
+                if (spin_evolver.ell_xN*spin_evolver.ell_yP - spin_evolver.ell_xP*spin_evolver.ell_yN)/(spin_evolver.ell_yP-spin_evolver.ell_yN) < 0.0 {
+                    spin_evolver.NalphaCycles = 1;
                 }
             }
-            else if ell_yN > 0.0 & ell_yP < 0.0 {
-                if (ell_xN*ell_yP - ell_xP*ell_yN)/(ell_yP-ell_yN) < 0.0{
-                    NalphaCycles = -1;
+            else if spin_evolver.ell_yN > 0.0 && spin_evolver.ell_yP < 0.0 {
+                if (spin_evolver.ell_xN*spin_evolver.ell_yP - spin_evolver.ell_xP*spin_evolver.ell_yN)/(spin_evolver.ell_yP-spin_evolver.ell_yN) < 0.0{
+                    spin_evolver.NalphaCycles = -1;
                 }
             }
 
             else{
-                NalphaCycles = 0;
+                spin_evolver.NalphaCycles = 0;
             }
-            alphaN = alphaN + NalphaCycles*2*PI;
+            spin_evolver.alphaN = spin_evolver.alphaN + (spin_evolver.NalphaCycles as f64)*2.0*PI;
 
-                // Finally, update the times
-            tuaP = 0;
-            tuaN = ΔtuahP;
+            // Finally, update the times
+            spin_evolver.tauP = 0.0;
+            spin_evolver.tauN = spin_evolver.delta_tau_h_P;
         }
 
-    spin_evolver
+        spin_evolver
+    }
+    // Placeholder for the actaul step function
+    pub fn do_step_succeeded(&mut self) -> bool {
+        // Placeholder for step success logic
+        true
+    }
+
+
+
+    pub fn GetSpinDataAtTime(&mut self, p: &TestCase,tau: f64) -> Option<SpinData> {
+        if p.chi1 == 0.0 && p.chi2 == 0.0 {
+            // If we have no spins
+            let mut data = SpinData::new();
+            data.iota = 1.0;
+            data.alpha = PI;
+            data.chi_ax = 0.0;
+            data.chi_ay = 0.0;
+            data.chi_az = 0.0;
+            data.chi_sx = 0.0;
+            data.chi_sy = 0.0;
+            data.chi_sz = 0.0;
+
+            let v_for_tau =self.VCalc.v_at_time(tau);
+            data.v = v_for_tau;
+            data.psi = p.lambda0 +self.VCalc.psi_orb_for_last_v() - 6.0 * v_for_tau.powi(3) * (v_for_tau / self.V0).ln();
+            return Some(data);
+        } else {
+            // If we have at least one nonzero spin, then we need to evolve
+            // Cycle through steps until we get beyond the requested time
+            while tau > self.tauN {
+                if !self.do_step_succeeded() {
+                    return None;
+                }
+            }
+
+            // Interpolate data to pass on to the rest of the program
+            let f_n = (tau - self.tauP) / self.delta_tau_h_P;
+            let f_p = 1.0 - f_n;
+
+            let mut data = SpinData::new();
+            data.iota = f_n * self.iota_N + f_p * self.iota_P;
+            data.alpha = f_n * self.alphaN + f_p * self.alphaP;
+            data.chi_ax = 0.5 * (f_n * (self.chi1xN- self.chi2xN) + f_p * (self.chi1xP- self.chi2xP));
+            data.chi_ay = 0.5 * (f_n * (self.chi1yN- self.chi2yN) + f_p * (self.chi1yP - self.chi2yP));
+            data.chi_az = 0.5 * (f_n * (self.chi1zN - self.chi2zN) + f_p * (self.chi1zP - self.chi2zP));
+            data.chi_sx = 0.5 * (f_n * (self.chi1xN + self.chi2xN) + f_p * (self.chi1xP + self.chi2xP));
+            data.chi_sy = 0.5 * (f_n * (self.chi1yN + self.chi2yN) + f_p * (self.chi1yP + self.chi2yP));
+            data.chi_sz = 0.5 * (f_n * (self.chi1zN + self.chi2zN) + f_p * (self.chi1zP + self.chi2zP));
+
+            // Calculate phase at the current time
+            let v_for_tau =self.VCalc.v_at_time(tau);
+            data.v = v_for_tau;
+            data.psi = p.lambda0 +self.VCalc.psi_orb_for_last_v() + f_n * self.psi_prN + f_p * self.psi_prP- 6.0 * v_for_tau.powi(3) * (v_for_tau / self.V0).ln();
+            return Some(data);
+        }
     }
 
 }
-
-

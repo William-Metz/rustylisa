@@ -5,6 +5,7 @@ use core::f64;
 use crate::constants::{YEAR, G, VE, G_OMEGA_E}; // Importing the constants
 use std::{f64::consts::PI};
 
+#[derive(PartialEq,Clone,Debug)] // Add this line to automatically implement Clone
 pub struct TestCase{
     // Fields from Case_Info
     pub Uncertainties: [f64; 15],
@@ -46,6 +47,8 @@ pub struct TestCase{
     pub detectors: i32,
     pub deltaT: f64,
     pub duration: f64,
+    pub chi1: f64,
+    pub chi2: f64,
 }
 
 impl TestCase{
@@ -165,6 +168,9 @@ impl TestCase{
             detectors,
             deltaT,
             duration,
+            chi1,
+            chi2,
+
         }
     }
 }
