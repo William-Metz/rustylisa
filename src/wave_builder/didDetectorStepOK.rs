@@ -25,6 +25,7 @@ impl Wave_Builder{
 
             // Otherwise, load the rest of the data coming from the spin evolver
             self.lotaDN = spinData.iota;
+            println!("iota:{}",spinData.iota);
             self.AlphaDN = spinData.alpha;
             self.chiaxDN = spinData.chi_ax;
             self.chiayDN = spinData.chi_ay;

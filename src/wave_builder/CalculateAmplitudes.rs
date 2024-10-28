@@ -4,11 +4,12 @@ use std::f64::consts::PI;
 
 // Now calculate all wave amplitudes
 impl Wave_Builder{
-    pub fn CalculateAmplitudes(&mut self) -> [f64; 248] {
+    pub fn CalculateAmplitudes(&mut self){
         // Calculate some useful trig functions of angle lota
 
         // Input stuff
         let lotaDN: f64 = self.lotaDN; 
+        println!("lotaDN: {}",lotaDN);
         let beta_: f64 = self.beta_;
         let delta: f64 = self.delta;
         let eta: f64 = self.eta;
@@ -480,7 +481,6 @@ impl Wave_Builder{
         A[246] = delta*(chiazDN*c1p4*(-4.0*cbeta_ + 20.0/3.0 *cbeta_*c2) + chiaxDN*c1p4*(14.0/3.0 *sbeta_ - 20.0/3.0 *c2*sbeta_));
         A[247] = delta*(20.0/3.0 *chiaxDN*cbeta_*c1p5*s1);
 
-        A
 
             //}
     }

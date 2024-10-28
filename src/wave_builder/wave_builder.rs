@@ -12,7 +12,6 @@ pub struct Wave_Builder{
     pub Spin_Evolver: SpinEvolverClass,
     pub tau_rDN: f64,
     pub eta: f64, 
-    pub pi: f64, 
     pub chiaxDN: f64, 
     pub chiayDN: f64, 
     pub chiazDN: f64, 
@@ -43,7 +42,6 @@ impl Wave_Builder {
             Spin_Evolver: SpinEvolverClass::new(c_info),
             tau_rDN: 0.0,
             eta: 0.0,
-            pi: 0.0,
             chiaxDN: 0.0,
             chiayDN: 0.0,
             chiazDN: 0.0,
@@ -55,11 +53,11 @@ impl Wave_Builder {
             PsiP: 0.0,
             PNOrder: 10,
             AlphaDN:0.0,
-            W: [0.0; 248], 
-            Cos_Am_Psi: [[0.0; 6]; 6],
-            Cos_Ap_Psi: [[0.0; 6]; 6],
-            Sin_Am_Psi: [[0.0; 6]; 6],
-            Sin_Ap_Psi: [[0.0; 6]; 6],
+            W: [1.0; 248], 
+            Cos_Am_Psi: [[1.0; 6]; 6],
+            Cos_Ap_Psi: [[1.0; 6]; 6],
+            Sin_Am_Psi: [[1.0; 6]; 6],
+            Sin_Ap_Psi: [[1.0; 6]; 6],
 
         }
 

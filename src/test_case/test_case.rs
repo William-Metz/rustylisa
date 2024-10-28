@@ -8,7 +8,7 @@ use std::{f64::consts::PI};
 #[derive(PartialEq,Clone,Debug)] // Add this line to automatically implement Clone
 pub struct TestCase{
     // Fields from Case_Info
-    pub Uncertainties: [f64; 15],
+    pub uncertainties: [f64; 15],
     pub beta_: f64,
     pub psi: f64,
     pub lambda0: f64,
@@ -16,17 +16,17 @@ pub struct TestCase{
     pub theta_: f64,
     pub phi_: f64,
     pub theta_1: f64,
-    pub Phi1: f64,
-    pub Theta2: f64,
-    pub Phi2: f64,
+    pub phi_1: f64,
+    pub theta_2: f64,
+    pub phi_2: f64,
     pub v0: f64,
     pub M: f64,         // Mass of the system in solar masses
     pub GM: f64,        // Gravitational constant * mass
-    pub Simga_el: f64,
-    pub S_el: f64,
-    pub T2: f64,
-    pub T3: f64,
-    pub T4: f64,
+    pub simga_ell: f64,
+    pub s_el: f64, //Do we need this?
+    pub t_2: f64, //Do we need this?
+    pub t_3: f64,//Do we need this?
+    pub t_4: f64,//Do we need this?
     pub tau_c: f64,
     pub vC: f64,
     pub v1: f64,
@@ -130,7 +130,7 @@ impl TestCase{
 
         // Return the struct
         TestCase{
-            Uncertainties: uncertainties,
+            uncertainties,
             beta_: beta,
             psi: psi,
             lambda0: lambda0,
@@ -138,17 +138,17 @@ impl TestCase{
             theta_: theta,
             phi_: phi,
             theta_1: theta1,
-            Phi1: phi1,
-            Theta2: theta2,
-            Phi2: phi2,
+            phi_1: phi1,
+            theta_2: theta2,
+            phi_2: phi2,
             v0,
             M: m,           // Store the mass
             GM: gm,         // Store GM (G * M)
-            Simga_el: sigma_l,
-            S_el: s_l,
-            T2: t2,
-            T3: t3,
-            T4: t4,
+            simga_ell: sigma_l,
+            s_el: s_l,
+            t_2: t2,
+            t_3: t3,
+            t_4: t4,
             tau_c,
             vC,
             v1,

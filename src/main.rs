@@ -9,7 +9,7 @@ use crate::wave_builder::wave_builder::Wave_Builder;
 fn main(){
 
     let testcase1 = TestCase::new(
-        [0.0; 15],      // Uncertainties
+        [10.0; 15],      // Uncertainties
         39.0,           // beta (degrees)
         24.0,           // psi (degrees)
         0.0,            // lambda0
@@ -23,8 +23,8 @@ fn main(){
         1000.0,         // M
         500.0,          // T0
         0.1,            // delta
-        1.1,            // chi1
-        1.2,            // chi2
+        0.0,            // chi1
+        0.0,            // chi2
         10000000.0,     // R
         268.5,            // omega_
         None,           // chi_10_x
@@ -40,17 +40,9 @@ fn main(){
         );
     let mut wave = Wave_Builder::new(&testcase1);
 
-    let mut last_wave = wave.clone();
     for n in 0.. testcase1.NSteps{
         let tau_r = wave.delta_tau_r; //update
-        if last_wave == wave {
-            println!("test");
-
-        }
-        else{
-            last_wave.print_differences(&wave);
-
-        }
+        println!("tau_r:{:?}",tau_r);
         if ! wave.didStepOK(n,&testcase1){
             println!("Colences");
             break;
@@ -83,9 +75,6 @@ impl Wave_Builder {
         }
         if self.eta != other.eta {
             println!("eta differs: self = {:?}, other = {:?}", self.eta, other.eta);
-        }
-        if self.pi != other.pi {
-            println!("pi differs: self = {:?}, other = {:?}", self.pi, other.pi);
         }
         if self.chiaxDN != other.chiaxDN {
             println!("chiaxDN differs: self = {:?}, other = {:?}", self.chiaxDN, other.chiaxDN);
@@ -120,6 +109,7 @@ impl Wave_Builder {
         if self.PNOrder != other.PNOrder {
             println!("PNOrder differs: self = {:?}, other = {:?}", self.PNOrder, other.PNOrder);
         }
+        /*
         for (i, (self_w, other_w)) in self.W.iter().zip(&other.W).enumerate() {
             if self_w != other_w {
                 println!("W[{}] differs: self = {:?}, other = {:?}", i, self_w, other_w);
@@ -152,6 +142,6 @@ impl Wave_Builder {
                     println!("Sin_Ap_Psi[{}][{}] differs: self = {:?}, other = {:?}", i, j, self_val, other_val);
                 }
             }
-        }
+        }*/
     }
 }
