@@ -3,7 +3,7 @@ use core::f64;
 // src/test_case/test_case.rs 
 
 use crate::constants::{YEAR, G, VE, G_OMEGA_E}; // Importing the constants
-use std::{f64::consts::PI};
+use std::f64::consts::PI;
 
 #[derive(PartialEq,Clone,Debug)] // Add this line to automatically implement Clone
 pub struct TestCase{
@@ -28,13 +28,13 @@ pub struct TestCase{
     pub t_3: f64,//Do we need this?
     pub t_4: f64,//Do we need this?
     pub tau_c: f64,
-    pub vC: f64,
+    pub v_c: f64,
     pub v1: f64,
-    pub NSteps: u8,
+    pub n_steps: u64,
 
     // Fields from TestCase
     pub delta: f64,
-    pub T0: f64,
+    pub t_0: f64,
     pub R: f64,
     pub omega_: f64,
     pub chi_10_x: Option<f64>,
@@ -43,9 +43,10 @@ pub struct TestCase{
     pub chi_20_x: Option<f64>,
     pub chi_20_y: Option<f64>,
     pub chi_20_z: Option<f64>,
-    pub Pn0: f64,
+    pub p_n0: f64,
+    pub pn_order: i32,
     pub detectors: i32,
-    pub deltaT: f64,
+    pub delta_t: f64,
     pub duration: f64,
     pub chi1: f64,
     pub chi2: f64,
@@ -78,8 +79,9 @@ impl TestCase{
         chi_20_y: Option<f64>,
         chi_20_z: Option<f64>,
         pn0: f64,
+        pn_order: i32,
         detectors: i32,
-        deltaT: f64,
+        delta_t: f64,
         duration: f64,
     ) -> TestCase{
 
@@ -122,7 +124,7 @@ impl TestCase{
         let tau_c = 5.0 / (256.0 * eta * v0.powf(8.0)) * (1.0 + t2 * v0.powf(2.0) + t3 * v0.powf(3.0) + t4 * v0.powf(4.0));
         
         //Caclutate run duratation
-        let nsteps= (duration*YEAR/deltaT).round() as u8;
+        let nsteps= (duration*YEAR/delta_t).round() as u64;
 
         // Placeholder for vC and v1, you may need to implement a class or function to calculate these
         let vC = 0.0; // Placeholder for vC calculation
@@ -150,12 +152,12 @@ impl TestCase{
             t_3: t3,
             t_4: t4,
             tau_c,
-            vC,
+            v_c: vC,
             v1,
-            NSteps: nsteps,
+            n_steps: nsteps,
             // Fields from TestCase
             delta,
-            T0: t0,
+            t_0: t0,
             R: r,
             omega_,
             chi_10_x,
@@ -164,9 +166,10 @@ impl TestCase{
             chi_20_x,
             chi_20_y,
             chi_20_z,
-            Pn0: pn0,
+            p_n0: pn0,
+            pn_order: pn_order,
             detectors,
-            deltaT,
+            delta_t,
             duration,
             chi1,
             chi2,
