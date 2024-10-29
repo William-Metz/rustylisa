@@ -1,4 +1,5 @@
 mod test_case;
+mod data_point;
 mod wave_builder;
 mod spin_data;
 mod vcalculator;

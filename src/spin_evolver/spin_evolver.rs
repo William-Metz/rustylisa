@@ -2,6 +2,7 @@ use core::f64;
 use crate::vcalculator::vcalculator::VCalculator;
 use crate::test_case::test_case::TestCase;
 use crate::spin_data::spin_data::SpinData;
+use crate::data_point::DataPoint;
 use std::f64::consts::PI;
 use libm::atan2;
 #[derive(Clone,PartialEq,Debug)]
@@ -19,6 +20,7 @@ pub struct SpinEvolverClass {
     pub om_delta2_i4: f64,
     pub op_delta2_i4: f64,
     pub test_case: TestCase,
+    pub data: Vec<DataPoint>,
     pub s_ell_: f64,
     pub v_0: f64,
     pub v_calc: VCalculator,
@@ -73,6 +75,7 @@ impl SpinEvolverClass {
             n_alpha_cycles: 0,
             om_delta2_i4: 0.0,
             op_delta2_i4: 0.0,
+            data: Vec::new(),
             test_case: c_info.clone(),
             s_ell_: 0.0,
             v_0: 0.0,

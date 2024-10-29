@@ -28,6 +28,8 @@ impl WaveBuilder{
         else{
             vpower = self.VDN*self.VDN
         }
+        self.HP = sum*vpower;
+        println!("pn{}",self.pn_order);
  
 
         if self.pn_order > 0{ 
@@ -80,6 +82,7 @@ impl WaveBuilder{
         else{
             vpower = self.VDN*self.VDN;
         }
+        self.HX = sum*vpower;
 
         if self.pn_order > 0{ 
             sum = 0.0;

@@ -49,7 +49,7 @@ impl WaveBuilder{
             self.sum_source_h(false);
 
             // Write out useful information for plotting (if this is not a case from a file)
-            self.save_data();
+            self.save_data(step_num);
             ////SaveDataForPlotting(tau_rDN)
 
             // We have completed the detector step successfully
