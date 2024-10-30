@@ -1,7 +1,7 @@
 //CalculateWaveFactors
 use crate::wave_builder::wave_builder::WaveBuilder;
 impl WaveBuilder{
-    pub fn CalculateWaveFactors(&mut self) -> [f64; 248] {
+    pub fn calculate_wave_factors(&mut self) -> [f64; 248] {
 
 
 
@@ -35,10 +35,10 @@ impl WaveBuilder{
         // noise at a given frequency
         for k in 1..5{
             for j in 1 ..5{
-                self.cos_ap_psi[j][k] = (self.cos_ap_psi[j][0]*self.cos_ap_psi[0][k] - self.sin_ap_psi[j][0]*self.sin_ap_psi[0][k]);
-                self.cos_am_psi[j][k] = (self.cos_ap_psi[j][0]*self.cos_ap_psi[0][k] + self.sin_ap_psi[j][0]*self.sin_ap_psi[0][k]);
-                self.sin_ap_psi[j][k]  = (self.sin_ap_psi[j][0]*self.cos_ap_psi[0][k] + self.cos_ap_psi[j][0]*self.sin_ap_psi[0][k]);
-                self.sin_am_psi[j][k]  = (self.sin_ap_psi[j][0]*self.cos_ap_psi[0][k] - self.cos_ap_psi[j][0]*self.sin_ap_psi[0][k]);
+                self.cos_ap_psi[j][k] = self.cos_ap_psi[j][0]*self.cos_ap_psi[0][k] - self.sin_ap_psi[j][0]*self.sin_ap_psi[0][k];
+                self.cos_am_psi[j][k] = self.cos_ap_psi[j][0]*self.cos_ap_psi[0][k] + self.sin_ap_psi[j][0]*self.sin_ap_psi[0][k];
+                self.sin_ap_psi[j][k]  = self.sin_ap_psi[j][0]*self.cos_ap_psi[0][k] + self.cos_ap_psi[j][0]*self.sin_ap_psi[0][k];
+                self.sin_am_psi[j][k]  = self.sin_ap_psi[j][0]*self.cos_ap_psi[0][k] - self.cos_ap_psi[j][0]*self.sin_ap_psi[0][k];
             }
             self.cos_am_psi[0][k] = self.cos_ap_psi[0][k];
             self.sin_am_psi[0][k] = -self.sin_ap_psi[0][k];

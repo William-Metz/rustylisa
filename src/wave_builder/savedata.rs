@@ -9,20 +9,19 @@ impl WaveBuilder{
     pub fn save_data(&mut self, step: u64){
         //        tau_r*Parameters.GM/Parameters.Year;
         let t: f64 = (step as f64)*self.spin_evolver.test_case.delta_t/YEAR;
-        let omega: f64 = self.VDN*self.VDN*self.VDN/self.spin_evolver.test_case.GM;
+        let omega: f64 = self.vdn*self.vdn*self.vdn/self.spin_evolver.test_case.GM;
         let torb: f64 = 2.0*PI/omega;
 
         let data_point = DataPoint {
             time: t,
-            hp: self.HP,
-            hx: self.HX,
+            hp: self.hp,
+            hx: self.hx,
             torb: torb,
             n_step: step
         };
         self.spin_evolver.data.push(data_point);
   //      println!("test");
 
-//        self.save_to_csv(&data_point);
     }
 }
 

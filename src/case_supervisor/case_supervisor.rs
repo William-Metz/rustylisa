@@ -2,7 +2,6 @@
 use crate::test_case::test_case::TestCase;
 use crate::wave_builder::wave_builder::WaveBuilder;
 use crate::constants::YEAR;
-use crate::data_point::DataPoint;
 use std::fs::File;
 use std::io::{BufWriter, Write};
 
@@ -35,7 +34,7 @@ impl CaseSupervisor {
             writeln!(writer, "{},{},{},{},{}", data_point.time, data_point.hp, data_point.hx, data_point.torb, data_point.n_step)
                 .expect("Could not write data point");
         }
-    }    pub fn run_simulation(mut self){
+    }    pub fn run_simulation(&mut self){
 
 
         for n in 0.. self.case.n_steps{

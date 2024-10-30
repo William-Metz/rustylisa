@@ -6,10 +6,12 @@ mod vcalculator;
 mod constants;
 mod spin_evolver;
 mod case_supervisor;
+mod plotting;
 use crate::test_case::test_case::TestCase;
-use crate::wave_builder::wave_builder::WaveBuilder;
 use crate::case_supervisor::case_supervisor::CaseSupervisor;
+use crate::plotting::plotting::plot_data;
 use std::time::Instant;
+
 fn main(){
 
     let start = Instant::now();
@@ -48,96 +50,8 @@ fn main(){
     new_case_super.run_simulation();
     let duration = start.elapsed();
     println!("Time elapsed: {:?}", duration);
+    let mut data = new_case_super.wave.spin_evolver.data.clone();
+    plot_data(&data).unwrap();
 
 }
 
-impl WaveBuilder {
-    pub fn print_differences(&self, other: &Self) {
-        if self.lota_dn != other.lota_dn {
-            println!("lotaDN differs: self = {:?}, other = {:?}", self.lota_dn, other.lota_dn);
-        }
-        if self.beta_ != other.beta_ {
-            println!("beta_ differs: self = {:?}, other = {:?}", self.beta_, other.beta_);
-        }
-        if self.delta != other.delta {
-            println!("delta differs: self = {:?}, other = {:?}", self.delta, other.delta);
-        }
-        if self.delta_tau_r != other.delta_tau_r {
-            println!("delta_tau_r differs: self = {:?}, other = {:?}", self.delta_tau_r, other.delta_tau_r);
-        }
-
-        if self.tau_r_dn != other.tau_r_dn {
-            println!("tau_rDN differs: self = {:?}, other = {:?}", self.tau_r_dn, other.tau_r_dn);
-        }
-        if self.eta != other.eta {
-            println!("eta differs: self = {:?}, other = {:?}", self.eta, other.eta);
-        }
-        if self.chiax_dn != other.chiax_dn {
-            println!("chiaxDN differs: self = {:?}, other = {:?}", self.chiax_dn, other.chiax_dn);
-        }
-        if self.chiay_dn != other.chiay_dn {
-            println!("chiayDN differs: self = {:?}, other = {:?}", self.chiay_dn, other.chiay_dn);
-        }
-        if self.chiaz_dn != other.chiaz_dn {
-            println!("chiazDN differs: self = {:?}, other = {:?}", self.chiaz_dn, other.chiaz_dn);
-        }
-        if self.chisx_dn != other.chisx_dn {
-            println!("chisxDN differs: self = {:?}, other = {:?}", self.chisx_dn, other.chisx_dn);
-        }
-        if self.chisy_dn != other.chisy_dn {
-            println!("chisyDN differs: self = {:?}, other = {:?}", self.chisy_dn, other.chisy_dn);
-        }
-        if self.chisz_dn != other.chisz_dn {
-            println!("chiszDN differs: self = {:?}, other = {:?}", self.chisz_dn, other.chisz_dn);
-        }
-        if self.p_sir_dn != other.p_sir_dn {
-            println!("PsirDN differs: self = {:?}, other = {:?}", self.p_sir_dn, other.p_sir_dn);
-        }
-        if self.p_sir_dp != other.p_sir_dp {
-            println!("PsirDP differs: self = {:?}, other = {:?}", self.p_sir_dp, other.p_sir_dp);
-        }
-        if self.p_si_p != other.p_si_p {
-            println!("PsiP differs: self = {:?}, other = {:?}", self.p_si_p, other.p_si_p);
-        }
-        if self.alpha_dn != other.alpha_dn {
-            println!("AlphaDN differs: self = {:?}, other = {:?}", self.alpha_dn, other.alpha_dn);
-        }
-        if self.pn_order != other.pn_order {
-            println!("PNOrder differs: self = {:?}, other = {:?}", self.pn_order, other.pn_order);
-        }
-
-        for (i, (self_w, other_w)) in self.w.iter().zip(&other.w).enumerate() {
-            if self_w != other_w {
-                println!("W[{}] differs: self = {:?}, other = {:?}", i, self_w, other_w);
-            }
-        }
-        for (i, (self_cos_am, other_cos_am)) in self.cos_am_psi.iter().zip(&other.cos_am_psi).enumerate() {
-            for (j, (self_val, other_val)) in self_cos_am.iter().zip(other_cos_am).enumerate() {
-                if self_val != other_val {
-                    println!("Cos_Am_Psi[{}][{}] differs: self = {:?}, other = {:?}", i, j, self_val, other_val);
-                }
-            }
-        }
-        for (i, (self_cos_ap, other_cos_ap)) in self.cos_ap_psi.iter().zip(&other.cos_ap_psi).enumerate() {
-            for (j, (self_val, other_val)) in self_cos_ap.iter().zip(other_cos_ap).enumerate() {
-                if self_val != other_val {
-                    println!("Cos_Ap_Psi[{}][{}] differs: self = {:?}, other = {:?}", i, j, self_val, other_val);
-                }
-            }
-        }
-        for (i, (self_sin_am, other_sin_am)) in self.sin_am_psi.iter().zip(&other.sin_am_psi).enumerate() {
-            for (j, (self_val, other_val)) in self_sin_am.iter().zip(other_sin_am).enumerate() {
-                if self_val != other_val {
-                    println!("Sin_Am_Psi[{}][{}] differs: self = {:?}, other = {:?}", i, j, self_val, other_val);
-                }
-            }
-        }
-        for (i, (self_sin_ap, other_sin_ap)) in self.sin_ap_psi.iter().zip(&other.sin_ap_psi).enumerate() {
-            for (j, (self_val, other_val)) in self_sin_ap.iter().zip(other_sin_ap).enumerate() {
-                if self_val != other_val {
-                    println!("Sin_Ap_Psi[{}][{}] differs: self = {:?}, other = {:?}", i, j, self_val, other_val);
-                }
-            }
-        }
-    }
-}

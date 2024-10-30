@@ -2,7 +2,7 @@ use core::f64;
 
 // src/test_case/test_case.rs 
 
-use crate::constants::{YEAR, G, VE, G_OMEGA_E}; // Importing the constants
+use crate::{constants::{YEAR, G}, vcalculator::vcalculator::VCalculator}; // Importing the constants
 use std::f64::consts::PI;
 
 #[derive(PartialEq,Clone,Debug)] // Add this line to automatically implement Clone
@@ -28,7 +28,7 @@ pub struct TestCase{
     pub t_3: f64,//Do we need this?
     pub t_4: f64,//Do we need this?
     pub tau_c: f64,
-    pub v_c: f64,
+    pub v_c: VCalculator,
     pub v1: f64,
     pub n_steps: u64,
 
@@ -127,8 +127,8 @@ impl TestCase{
         let nsteps= (duration*YEAR/delta_t).round() as u64;
 
         // Placeholder for vC and v1, you may need to implement a class or function to calculate these
-        let vC = 0.0; // Placeholder for vC calculation
-        let v1 = 0.0; // Placeholder for v1 calculation
+        let mut v_c = VCalculator::new(tau_c, delta, 0.0, 0.0); 
+        let v1 = v_c.v_at_time(0.0); // Placeholder for v1 calculation
 
         // Return the struct
         TestCase{
@@ -152,7 +152,7 @@ impl TestCase{
             t_3: t3,
             t_4: t4,
             tau_c,
-            v_c: vC,
+            v_c,
             v1,
             n_steps: nsteps,
             // Fields from TestCase

@@ -172,17 +172,17 @@ impl SpinEvolverClass {
             let j0z: f64 = spin_evolver.op_delta2_i4*chi1z_l + spin_evolver.om_delta2_i4*chi2z_l + l_0;
 
             // Calculate rotation matrix
-            let θ0: f64 = atan2(j0z, (j0x*j0x+j0y*j0y).sqrt());
-            let φ0: f64 = atan2(j0y, j0x);
-            let rxx: f64 = (θ0).cos()*(φ0).cos();
-            let rxy: f64 = (θ0).cos()*(φ0).sin();
-            let rxz: f64 = -(θ0).sin();
-            let ryx: f64 = -(φ0).sin();
-            let ryy: f64 = (φ0).cos();
+            let theta_0: f64 = atan2(j0z, (j0x*j0x+j0y*j0y).sqrt());
+            let phi_0: f64 = atan2(j0y, j0x);
+            let rxx: f64 = (theta_0).cos()*(phi_0).cos();
+            let rxy: f64 = (theta_0).cos()*(phi_0).sin();
+            let rxz: f64 = -(theta_0).sin();
+            let ryx: f64 = -(phi_0).sin();
+            let ryy: f64 = (phi_0).cos();
             let ryz: f64 = 0.0;
-            let rzx: f64 = (θ0).sin()*(φ0).cos();
-            let rzy: f64 = (θ0).sin()*(φ0).sin();
-            let rzz: f64 = (θ0).cos();
+            let rzx: f64 = (theta_0).sin()*(phi_0).cos();
+            let rzy: f64 = (theta_0).sin()*(phi_0).sin();
+            let rzz: f64 = (theta_0).cos();
 
             // Calculate initial values for the spin vector components
             spin_evolver.chi1x_p = rxx*chi1x_l + rxy*chi1y_l  + rxz*chi1z_l;
@@ -268,7 +268,6 @@ impl SpinEvolverClass {
             spin_evolver.chi2z_n = spin_evolver.chi2z_p + 0.5*spin_evolver.delta_tau_hp*(chi2z_dot_p + chi2z_dot_n);
 
             // Evolve the orbital angular momentum using a more correct step
-            let ell_dot_n: f64 = nu*(-1.0/v2 + spin_evolver.l_2 + 2.0*spin_evolver.l_2*spin_evolver.test_case.v0 + 3.0*spin_evolver.l_4*v2)*spin_evolver.v_calc.v_dot_for_last_v()/l_0;
             let ell_x_dot_n: f64 = -spin_evolver.op_delta2_i4*chi1x_dot_n - spin_evolver.om_delta2_i4*chi2x_dot_n + ell_dot_p*spin_evolver.ell_x_n;
             let ell_y_dot_n: f64 = -spin_evolver.op_delta2_i4*chi1y_dot_n - spin_evolver.om_delta2_i4*chi2y_dot_n + ell_dot_p*spin_evolver.ell_y_n;
             let ell_z_dot_n: f64 = -spin_evolver.op_delta2_i4*chi1z_dot_n - spin_evolver.om_delta2_i4*chi2z_dot_n + ell_dot_p*spin_evolver.ell_z_n;
