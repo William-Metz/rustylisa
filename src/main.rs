@@ -1,3 +1,4 @@
+
 mod test_case;
 mod data_point;
 mod wave_builder;
@@ -7,51 +8,165 @@ mod constants;
 mod spin_evolver;
 mod case_supervisor;
 mod plotting;
+
 use crate::test_case::test_case::TestCase;
 use crate::case_supervisor::case_supervisor::CaseSupervisor;
-use crate::plotting::plotting::plot_data;
-use std::time::Instant;
+use crate::data_point::DataPoint;
 
-fn main(){
+use eframe::egui;
+use egui_plot::{Line, Legend, Plot, PlotPoints};
 
-    let start = Instant::now();
-    let testcase1 = TestCase::new(
-        [10.0; 15],      // Uncertainties
-        39.0,           // beta (degrees)
-        24.0,           // psi (degrees)
-        0.0,            // lambda0
-        1.0,            // rho_0
-        5.0,            // theta_ (degrees)
-        268.5,          // phi_ (degrees)
-        1.0,            // theta_1 (example)
-        1.0,            // phi1 (example)
-        1.0,            // theta2 (example)
-        1.0,            // phi2 (example)
-        10000.0,         // M
-        500.0,          // T0
-        0.1,            // delta
-        0.0,            // chi1
-        0.0,            // chi2
-        10000000.0,     // R
-        268.5,            // omega_
-        None,           // chi_10_x
-        None,      // chi_10_y
-        None,      // chi_10_z
-        None,      // chi_20_x
-        None,      // chi_20_y
-        None,      // chi_20_z
-        0.0,            // Pn0
-        0,              // pn_order
-        2,              // detectors
-        50.0,           // deltaT
-        1.0,            // duration
-        );
-    let mut new_case_super = CaseSupervisor::new(testcase1);
-    new_case_super.run_simulation();
-    let duration = start.elapsed();
-    println!("Time elapsed: {:?}", duration);
-    let mut data = new_case_super.wave.spin_evolver.data.clone();
-    plot_data(&data).unwrap();
+fn main() {
+    let native_options = eframe::NativeOptions::default();
+    eframe::run_native(
+        "Gravitational Wave Visualizer",
+        native_options,
+        Box::new(|_cc| Box::new(MyApp::default())),
+    );
+}
 
+struct MyApp {
+    test_case: TestCase,
+
+    // Simulation data
+    simulation_data: Option<Vec<DataPoint>>,
+
+    // Flag to indicate if the simulation needs to be run
+    needs_simulation: bool,
+}
+
+impl Default for MyApp {
+    fn default() -> Self {
+        Self {
+            test_case: TestCase::new(
+                [0.0; 15],  // Uncertainties
+                39.0,        // beta (degrees)
+                24.0,        // psi (degrees)
+                0.0,         // lambda0
+                0.0,         // rho_0
+                5.0,         // theta_ (degrees)
+                268.5,       // phi_ (degrees)
+                0.0,         // theta_1 (example)
+                0.0,         // phi1 (example)
+                0.0,         // theta2 (example)
+                0.0,         // phi2 (example)
+                10000.0,     // M
+                500.0,       // T0
+                0.1,         // delta
+                0.0,         // chi1
+                0.0,         // chi2
+                10000000.0,  // R
+                268.5,       // omega_
+                None,        // chi_10_x
+                None,        // chi_10_y
+                None,        // chi_10_z
+                None,        // chi_20_x
+                None,        // chi_20_y
+                None,        // chi_20_z
+                0.0,         // Pn0
+                0,           // pn_order
+                2,           // detectors
+                50.0,        // deltaT
+                1.0,         // duration
+            ),
+            simulation_data: None,
+            needs_simulation: false,
+        }
+    }
+}
+
+impl eframe::App for MyApp {
+    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        // Create the UI
+        egui::CentralPanel::default().show(ctx, |ui| {
+            ui.heading("Input Parameters");
+
+            egui::Grid::new("param_grid")
+                .num_columns(2)
+                .spacing([40.0, 4.0])
+                .show(ui, |ui| {
+                    // Beta
+                    ui.label("beta:");
+                    ui.add(egui::DragValue::new(&mut self.test_case.beta_));
+                    ui.end_row();
+
+                    // Psi
+                    ui.label("psi:");
+                    ui.add(egui::DragValue::new(&mut self.test_case.psi));
+                    ui.end_row();
+
+                    // Lambda0
+                    ui.label("lambda0:");
+                    ui.add(egui::DragValue::new(&mut self.test_case.lambda0));
+                    ui.end_row();
+
+                    // ... Add other parameters as needed
+
+                    // Duration
+                    ui.label("duration:");
+                    ui.add(egui::DragValue::new(&mut self.test_case.duration));
+                    ui.end_row();
+                });
+
+            // Run Simulation button
+            if ui.button("Run Simulation").clicked() {
+                self.needs_simulation = true;
+            }
+
+            ui.separator();
+
+            // Plot the simulation data if available
+            if let Some(data) = &self.simulation_data {
+                ui.heading("Gravitational Wave Plot");
+
+                let hp_points: PlotPoints = data
+                    .iter()
+                    .map(|point| [point.time, point.hp])
+                    .collect();
+
+                let hx_points: PlotPoints = data
+                    .iter()
+                    .map(|point| [point.time, point.hx])
+                    .collect();
+
+                let hp_line = Line::new(hp_points).name("HP");
+                let hx_line = Line::new(hx_points).name("HX");
+
+                Plot::new("wave_plot")
+                    .view_aspect(2.0)
+                    .legend(Legend::default())
+                    .show(ui, |plot_ui| {
+                        plot_ui.line(hp_line);
+                        plot_ui.line(hx_line);
+                    });
+            }
+        });
+
+        // Run the simulation if needed
+        if self.needs_simulation {
+            self.run_simulation();
+            self.needs_simulation = false;
+        }
+    }
+}
+
+impl MyApp {
+    fn run_simulation(&mut self) {
+        use std::time::Instant;
+
+        let start = Instant::now();
+
+        // Clone the test case to use in simulation
+        let testcase = self.test_case.clone();
+
+        let mut case_supervisor = CaseSupervisor::new(testcase);
+        case_supervisor.run_simulation();
+
+        let duration = start.elapsed();
+        println!("Simulation Time elapsed: {:?}", duration);
+
+        // Store the simulation data
+        self.simulation_data = Some(case_supervisor.wave.spin_evolver.data.clone());
+    }
 }
 

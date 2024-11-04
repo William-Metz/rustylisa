@@ -5,20 +5,21 @@ impl WaveBuilder{
     // These constants define static variables indicating the endpoints of certain polarizations
     pub fn sum_source_h(&mut self, do_v_deriv: bool){
 
-        let h0_p_last_index: usize = 4;
-        let h1_p_last_index: usize= 18;
-        let h2_p_last_index: usize = 46;
-        let h3_p_last_index: usize = 128;
-        let h0_x_last_index: usize = 132;
-        let h1_x_last_index: usize = 145;
-        let h2_x_last_index: usize = 172;
-        let h3_x_last_index: usize = 247;
+        let h0_p_last_index: usize = 5;
+        let h1_p_last_index: usize= 19;
+        let h2_p_last_index: usize = 47;
+        let h3_p_last_index: usize = 129;
+        let h0_x_last_index: usize = 133;
+        let h1_x_last_index: usize = 146;
+        let h2_x_last_index: usize = 173;
+        let h3_x_last_index: usize = 248;
 
         // First, do the plus polarization
         let mut j_start: usize; 
         let mut sum: f64 = 0.0;
         for j in 0.. h0_p_last_index {
             sum = sum + self.a[j]*self.w[j];
+
         }
         let mut vpower: f64;
 
@@ -28,6 +29,7 @@ impl WaveBuilder{
         else{
             vpower = self.vdn*self.vdn
         }
+        println!("{sum}, {vpower}");
         self.hp = sum*vpower;
  
 
@@ -81,11 +83,6 @@ impl WaveBuilder{
             vpower = self.vdn*self.vdn;
         }
         self.hx = sum*vpower;
-/*        println!("HX: {}",self.HX);
-        println!("VDN: {}",self.VDN);
-        println!("vpower: {}", vpower);
-        println!("sum: {}", sum);
-*/
 
         if self.pn_order > 0{ 
             sum = 0.0;
@@ -130,5 +127,6 @@ impl WaveBuilder{
             let mut h0: f64 = 0.5*(1.0 - self.spin_evolver.test_case.delta*self.spin_evolver.test_case.delta)*self.spin_evolver.test_case.GM/(self.spin_evolver.test_case.R);
             self.hp = h0*self.hp;
             self.hx = h0*self.hx;
+            println!("h0: {h0},hp: {},hx: {}",self.hp,self.hx);
     }
 }

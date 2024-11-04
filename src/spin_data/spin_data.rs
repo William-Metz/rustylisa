@@ -1,4 +1,4 @@
-
+#[derive(Debug)]
 pub struct SpinData {
     pub v: f64,
     pub iota: f64,

@@ -7,7 +7,6 @@ use std::f64::consts::PI;
 impl WaveBuilder{
     pub fn calculate_amplitudes(&mut self){
         // Calculate some useful trig functions of angle lota
-
         // Input stuff
         //
         let c2: f64 = (self.lota_dn).cos();
@@ -469,5 +468,6 @@ impl WaveBuilder{
 
 
         }
+    
     }
 }

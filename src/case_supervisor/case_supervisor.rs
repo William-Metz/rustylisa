@@ -16,7 +16,6 @@ impl CaseSupervisor {
     // Constructor function to initialize the struct
     pub fn new(case: TestCase) -> CaseSupervisor {
         let delta_tau_r = case.delta_t / case.GM;
-        println!("{}",delta_tau_r);
         let delta_tau = 0.0; 
         let wave = WaveBuilder::new(&case);
         CaseSupervisor { case, wave, delta_tau}
@@ -40,8 +39,7 @@ impl CaseSupervisor {
         for n in 0.. self.case.n_steps{
             self.delta_tau = (n as f64)*self.wave.delta_tau_r; //update
 
-            if ! self.wave.did_step_ok(n,&self.case){
-                println!("{}", (self.delta_tau*self.case.GM/YEAR));
+            if ! self.wave.did_step_ok(n){
 
                 println!("Colences");
                 self.save_to_csv();

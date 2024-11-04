@@ -1,5 +1,4 @@
 use std::f64::consts::PI;
-use std::f64::consts::E;
 #[derive(Clone,PartialEq,Debug)]
 pub struct VCalculator {
     a0: f64,
@@ -49,7 +48,7 @@ impl VCalculator {
         let onem_delta = 1.0 - delta;
         let tau_c = the_tau_c;
         let b6 = -1712.0 / 315.0;
-        
+        let gamma_e: f64 = 0.577215664901533; 
         let beta3 = (113.0 / 48.0 * onep_delta * onep_delta + 25.0 / 4.0 * eta) * chi1l
             + (113.0 / 48.0 * onem_delta * onem_delta + 25.0 / 4.0 * eta) * chi2l;
 
@@ -68,7 +67,6 @@ impl VCalculator {
             + (75.0 / 8.0 * onem_delta * onem_delta + 151.0 / 6.0 * eta)
             * chi2l
             * PI;
-
         let beta7 = ((130325.0 / 3024.0
             - 796069.0 / 8064.0 * eta
             + 100019.0 / 3456.0 * eta * eta)
@@ -95,13 +93,12 @@ impl VCalculator {
         let a5 = (-4159.0 / 672.0 + 189.0 / 8.0 * eta) * PI - beta5;
         let a6 = 16447322263.0 / 139708800.0
             + 16.0 / 3.0 * PI * PI
-            - 856.0 / 105.0 * (16.0f64).ln()
-            - 1712.0 / 105.0 * E.ln()
+            - 856.0 / 105.0 * (16.0 as f64).ln()
+            - 1712.0 / 105.0 * gamma_e
             - beta6
             + (451.0 / 48.0 * PI * PI - 56198689.0 / 217728.0) * eta
             + 541.0 / 896.0 * eta * eta
             - 5605.0 / 2592.0 * eta * eta * eta;
-
         let a7 = -4415.0 / 4032.0 * PI + 358675.0 / 6048.0 * PI * eta + 91495.0 / 1512.0 * PI * eta * eta - beta7;
 
         let c2 = -a2 / 6.0;
@@ -187,7 +184,7 @@ impl VCalculator {
             beta5,
             beta6,
             beta7,
-            zeta: zeta0,
+            zeta: 0.0,
             zeta0,
             eta,
             tau_c,
@@ -203,6 +200,7 @@ impl VCalculator {
         let zeta5 = zeta4 * zeta;
         let zeta6 = zeta5 * zeta;
         let zeta7 = zeta6 * zeta;
+        
 
         self.v = zeta
             * (1.0
@@ -230,7 +228,12 @@ impl VCalculator {
     }
 
     pub fn psi_orb_for_last_v(&self) -> f64 {
-        let log_viv0 = self.v.ln() / self.v0.ln();
+
+        let log_viv0 = (self.v/self.v0).ln();
+        
+        //Left off
+
+
         self.psi_c + self.p0 / self.v5 * (1.0
             + self.p2 * self.v2
             + self.p3 * self.v3

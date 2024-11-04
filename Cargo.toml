@@ -9,3 +9,5 @@ edition = "2021"
 serde = { version = "1.0.214", features = ["derive"] }
 libm = "0.2.8"
 plotters = "0.3"  
+egui_plot = "0.23"
+eframe = "0.23"
