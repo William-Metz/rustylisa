@@ -1,4 +1,3 @@
-
 use crate::wave_builder::wave_builder::WaveBuilder;
 impl WaveBuilder {
     // These constants define static variables indicating the endpoints of certain polarizations

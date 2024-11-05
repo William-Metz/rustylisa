@@ -17,14 +17,14 @@ use eframe::egui;
 use egui_plot::{Legend, Line, Plot, PlotPoints};
 
 fn main() {
-
     let native_options = eframe::NativeOptions::default();
-    
-     eframe::run_native(
+
+    eframe::run_native(
         "Gravitational Wave Visualizer",
         native_options,
         Box::new(|_cc| Box::new(MyApp::default())),
-    ).expect("Failed to start eframe application");
+    )
+    .expect("Failed to start eframe application");
 }
 
 struct MyApp {
