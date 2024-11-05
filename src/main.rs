@@ -1,7 +1,8 @@
+#![allow(non_snake_case)]
+#![allow(clippy::module_inception)]
 mod case_supervisor;
 mod constants;
 mod data_point;
-mod plotting;
 mod spin_data;
 mod spin_evolver;
 mod test_case;
@@ -16,12 +17,14 @@ use eframe::egui;
 use egui_plot::{Legend, Line, Plot, PlotPoints};
 
 fn main() {
+
     let native_options = eframe::NativeOptions::default();
-    eframe::run_native(
+    
+     eframe::run_native(
         "Gravitational Wave Visualizer",
         native_options,
         Box::new(|_cc| Box::new(MyApp::default())),
-    );
+    ).expect("Failed to start eframe application");
 }
 
 struct MyApp {

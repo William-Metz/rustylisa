@@ -1,4 +1,3 @@
-use std::usize;
 
 use crate::wave_builder::wave_builder::WaveBuilder;
 impl WaveBuilder {
