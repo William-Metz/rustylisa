@@ -1,4 +1,3 @@
-
 // Project: Gravitational Wave Visualizer
 // Author: Will Metz(Pomona College)
 // Created: 2024
