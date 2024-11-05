@@ -1,3 +1,12 @@
+
+// Project: Gravitational Wave Visualizer
+// Author: Will Metz(Pomona College)
+// Created: 2024
+// File Path: src/constants.rs
+// ------------------------------------------------------------
+// This project is open for educational and personal use only.
+// No warranty is provided, and this is not an official product.
+// ------------------------------------------------------------
 // constants.rs
 pub const YEAR: f64 = 3.15576e7; // Length of the year in seconds
 pub const G: f64 = 4.9267e-6; // Mass of the sun in seconds times the mass of the system

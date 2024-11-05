@@ -1,3 +1,12 @@
+
+// Project: Gravitational Wave Visualizer
+// Author: Will Metz(Pomona College)
+// Created: 2024
+// File Path: src/test_case/new_test_case.rs
+// ------------------------------------------------------------
+// This project is open for educational and personal use only.
+// No warranty is provided, and this is not an official product.
+// ------------------------------------------------------------
 use crate::constants::{G, HUBBLECONSTANT, YEAR};
 use crate::test_case::test_case::TestCase;
 use std::f64::consts::PI;

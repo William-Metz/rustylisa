@@ -1,3 +1,12 @@
+
+// Project: Gravitational Wave Visualizer
+// Author: Will Metz(Pomona College)
+// Created: 2024
+// File Path: src/spin_evolver/do_step_succeeded.rs
+// ------------------------------------------------------------
+// This project is open for educational and personal use only.
+// No warranty is provided, and this is not an official product.
+// ------------------------------------------------------------
 use crate::spin_evolver::spin_evolver::SpinEvolverClass;
 use libm::atan2;
 use std::f64::consts::PI;

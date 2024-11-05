@@ -1,3 +1,12 @@
+
+// Project: Gravitational Wave Visualizer
+// Author: Will Metz(Pomona College)
+// Created: 2024
+// File Path: src/wave_builder/wave_builder.rs
+// ------------------------------------------------------------
+// This project is open for educational and personal use only.
+// No warranty is provided, and this is not an official product.
+// ------------------------------------------------------------
 use core::f64;
 
 use crate::{
@@ -5,7 +14,6 @@ use crate::{
     test_case::test_case::TestCase,
 };
 
-// src/wave_builder/wave_builder.rs
 #[derive(Clone, PartialEq, Debug)]
 pub struct WaveBuilder {
     pub lota_dn: f64,

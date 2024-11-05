@@ -1,6 +1,13 @@
-use core::f64;
 
-// src/test_case/test_case.rs
+// Project: Gravitational Wave Visualizer
+// Author: Will Metz(Pomona College)
+// Created: 2024
+// File Path: src/test_case/test_case.rs
+// ------------------------------------------------------------
+// This project is open for educational and personal use only.
+// No warranty is provided, and this is not an official product.
+// ------------------------------------------------------------
+use core::f64;
 
 #[derive(PartialEq, Clone, Debug)]
 pub struct TestCase {
