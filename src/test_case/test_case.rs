@@ -1,8 +1,9 @@
 use core::f64;
 
-// src/test_case/test_case.rs 
+// src/test_case/test_case.rs
 
-#[derive(PartialEq,Clone,Debug)] pub struct TestCase{
+#[derive(PartialEq, Clone, Debug)]
+pub struct TestCase {
     // Fields from Case_Info
     pub uncertainties: [f64; 15],
     pub beta_: f64,
@@ -15,8 +16,8 @@ use core::f64;
     pub phi_1: f64,
     pub theta_2: f64,
     pub phi_2: f64,
-    pub M: f64,         // Mass of the system in solar masses
-    pub GM: f64,        // Gravitational constant * mass
+    pub M: f64,  // Mass of the system in solar masses
+    pub GM: f64, // Gravitational constant * mass
     pub tau_c: f64,
     pub n_steps: u64,
 
@@ -37,5 +38,3 @@ use core::f64;
     pub chi1: f64,
     pub chi2: f64,
 }
-
-

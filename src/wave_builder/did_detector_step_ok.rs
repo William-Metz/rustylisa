@@ -2,21 +2,21 @@ use std::f64;
 
 use crate::wave_builder::wave_builder::WaveBuilder;
 
-impl WaveBuilder{
-    pub fn did_step_ok(&mut self, step_num: u64) -> bool{  
-
-        if ((step_num as f64)+2.0)*self.delta_tau > (self.spin_evolver.test_case.tau_c){
-            return false
+impl WaveBuilder {
+    pub fn did_step_ok(&mut self, step_num: u64) -> bool {
+        if ((step_num as f64) + 2.0) * self.delta_tau > (self.spin_evolver.test_case.tau_c) {
+            return false;
         }
         // Otherwise, check if we can get data from the spin evolver
-        if let Some(spin_data) = self.spin_evolver.get_spin_data_at_time((step_num as f64)*self.delta_tau){
+        if let Some(spin_data) = self
+            .spin_evolver
+            .get_spin_data_at_time((step_num as f64) * self.delta_tau)
+        {
             // We have data, so
             self.vdn = spin_data.v; // get the current speed
-                                  // If our speed is half that of light, our approximations are breaking down, so bail out
-            if self.vdn > 0.5{
-
+                                    // If our speed is half that of light, our approximations are breaking down, so bail out
+            if self.vdn > 0.5 {
                 return false;
-
             }
 
             // Otherwise, load the rest of the data coming from the spin evolver
@@ -36,7 +36,7 @@ impl WaveBuilder{
             // psi_rDN = psi_rDP + (1.0 + Parameters.Ve*Sin(Parameters.Θ)*Sin(Parameters.GMΩe*tau_rm - Parameters.Φ))*(spinData.psi_ - psi_P)
             self.psi_r_dp = self.psi_r_dn;
             self.psi_p = spin_data.psi;
-            self.tau_r_dn = (step_num as f64)*self.delta_tau_r;
+            self.tau_r_dn = (step_num as f64) * self.delta_tau_r;
 
             // Calculate the wave
             self.calculate_amplitudes();
@@ -50,10 +50,8 @@ impl WaveBuilder{
             // We have completed the detector step successfully
 
             true
-        }
-        else {
+        } else {
             false
         }
     }
 }
-

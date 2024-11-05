@@ -1,20 +1,19 @@
-
-mod test_case;
-mod data_point;
-mod wave_builder;
-mod spin_data;
-mod vcalculator;
-mod constants;
-mod spin_evolver;
 mod case_supervisor;
+mod constants;
+mod data_point;
 mod plotting;
+mod spin_data;
+mod spin_evolver;
+mod test_case;
+mod vcalculator;
+mod wave_builder;
 
-use crate::test_case::test_case::TestCase;
 use crate::case_supervisor::case_supervisor::CaseSupervisor;
 use crate::data_point::DataPoint;
+use crate::test_case::test_case::TestCase;
 
 use eframe::egui;
-use egui_plot::{Line, Legend, Plot, PlotPoints};
+use egui_plot::{Legend, Line, Plot, PlotPoints};
 
 fn main() {
     let native_options = eframe::NativeOptions::default();
@@ -89,15 +88,11 @@ impl eframe::App for MyApp {
             if let Some(data) = &self.simulation_data {
                 ui.heading("Gravitational Wave Plot");
 
-                let hp_points: PlotPoints = data
-                    .iter()
-                    .map(|point| [point.time, point.hp])
-                    .collect();
+                let hp_points: PlotPoints =
+                    data.iter().map(|point| [point.time, point.hp]).collect();
 
-                let hx_points: PlotPoints = data
-                    .iter()
-                    .map(|point| [point.time, point.hx])
-                    .collect();
+                let hx_points: PlotPoints =
+                    data.iter().map(|point| [point.time, point.hx]).collect();
 
                 let hp_line = Line::new(hp_points).name("HP");
                 let hx_line = Line::new(hx_points).name("HX");
@@ -139,4 +134,3 @@ impl MyApp {
         self.simulation_data = Some(case_supervisor.wave.spin_evolver.data.clone());
     }
 }
-

@@ -4,7 +4,6 @@ use crate::wave_builder::wave_builder::WaveBuilder;
 use std::fs::File;
 use std::io::{BufWriter, Write};
 
-
 pub struct CaseSupervisor {
     pub case: TestCase,
     pub wave: WaveBuilder,
@@ -14,11 +13,14 @@ pub struct CaseSupervisor {
 impl CaseSupervisor {
     // Constructor function to initialize the struct
     pub fn new(case: TestCase) -> CaseSupervisor {
-//        let delta_tau_r = case.delta_t / case.GM;
-        let delta_tau = 0.0; 
+        //        let delta_tau_r = case.delta_t / case.GM;
+        let delta_tau = 0.0;
         let wave = WaveBuilder::new(&case);
-        CaseSupervisor { case, wave, delta_tau}
-
+        CaseSupervisor {
+            case,
+            wave,
+            delta_tau,
+        }
     }
     pub fn save_to_csv(&self) {
         let file = File::create("data.csv").expect("Could not create file");
@@ -29,29 +31,25 @@ impl CaseSupervisor {
 
         // Write all data points
         for data_point in self.wave.spin_evolver.data.iter() {
-            writeln!(writer, "{},{},{},{},{}", data_point.time, data_point.hp, data_point.hx, data_point.torb, data_point.n_step)
-                .expect("Could not write data point");
+            writeln!(
+                writer,
+                "{},{},{},{},{}",
+                data_point.time, data_point.hp, data_point.hx, data_point.torb, data_point.n_step
+            )
+            .expect("Could not write data point");
         }
-    }    pub fn run_simulation(&mut self){
+    }
+    pub fn run_simulation(&mut self) {
+        for n in 0..self.case.n_steps {
+            self.delta_tau = (n as f64) * self.wave.delta_tau_r; //update
 
-
-        for n in 0.. self.case.n_steps{
-            self.delta_tau = (n as f64)*self.wave.delta_tau_r; //update
-
-            if ! self.wave.did_step_ok(n){
-
+            if !self.wave.did_step_ok(n) {
                 println!("Colences");
                 self.save_to_csv();
                 break;
-
             }
 
             //   wave.print_differences(&last_wave);
-
-
-
         }
-
-
     }
 }

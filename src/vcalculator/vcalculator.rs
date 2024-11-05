@@ -1,5 +1,5 @@
 use std::f64::consts::PI;
-#[derive(Clone,PartialEq,Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct VCalculator {
     a0: f64,
     a2: f64,
@@ -48,37 +48,29 @@ impl VCalculator {
         let onem_delta = 1.0 - delta;
         let tau_c = the_tau_c;
         let b6 = -1712.0 / 315.0;
-        let gamma_e: f64 = 0.577215664901533; 
+        let gamma_e: f64 = 0.577215664901533;
         let beta3 = (113.0 / 48.0 * onep_delta * onep_delta + 25.0 / 4.0 * eta) * chi1l
             + (113.0 / 48.0 * onem_delta * onem_delta + 25.0 / 4.0 * eta) * chi2l;
 
         let beta5 = ((31319.0 / 4032.0 - 1159.0 / 96.0 * eta) * onep_delta * onep_delta
-            + 809.0 / 84.0 * eta - 281.0 / 8.0 * eta * eta)
+            + 809.0 / 84.0 * eta
+            - 281.0 / 8.0 * eta * eta)
             * chi1l
             + ((31319.0 / 4032.0 - 1159.0 / 96.0 * eta) * onem_delta * onem_delta
                 + 809.0 / 84.0 * eta
                 - 281.0 / 8.0 * eta * eta)
                 * chi2l;
 
-        let beta6 = PI
-            * (75.0 / 8.0 * onep_delta * onep_delta + 151.0 / 6.0 * eta)
-            * chi1l
-            * PI
-            + (75.0 / 8.0 * onem_delta * onem_delta + 151.0 / 6.0 * eta)
-            * chi2l
-            * PI;
-        let beta7 = ((130325.0 / 3024.0
-            - 796069.0 / 8064.0 * eta
-            + 100019.0 / 3456.0 * eta * eta)
+        let beta6 = PI * (75.0 / 8.0 * onep_delta * onep_delta + 151.0 / 6.0 * eta) * chi1l * PI
+            + (75.0 / 8.0 * onem_delta * onem_delta + 151.0 / 6.0 * eta) * chi2l * PI;
+        let beta7 = ((130325.0 / 3024.0 - 796069.0 / 8064.0 * eta + 100019.0 / 3456.0 * eta * eta)
             * onep_delta
             * onep_delta
             + 1195759.0 / 18144.0 * eta
             - 257023.0 / 1008.0 * eta * eta
             + 2903.0 / 32.0 * eta * eta * eta)
             * chi1l
-            + ((130325.0 / 3024.0
-                - 796069.0 / 8064.0 * eta
-                + 100019.0 / 3456.0 * eta * eta)
+            + ((130325.0 / 3024.0 - 796069.0 / 8064.0 * eta + 100019.0 / 3456.0 * eta * eta)
                 * onem_delta
                 * onem_delta
                 + 1195759.0 / 18144.0 * eta
@@ -91,21 +83,24 @@ impl VCalculator {
         let a3 = 4.0 * PI - beta3;
         let a4 = 34103.0 / 18144.0 + 13661.0 / 2016.0 * eta + 59.0 / 18.0 * eta * eta;
         let a5 = (-4159.0 / 672.0 + 189.0 / 8.0 * eta) * PI - beta5;
-        let a6 = 16447322263.0 / 139708800.0
-            + 16.0 / 3.0 * PI * PI
+        let a6 = 16447322263.0 / 139708800.0 + 16.0 / 3.0 * PI * PI
             - 856.0 / 105.0 * 16.0_f64.ln()
             - 1712.0 / 105.0 * gamma_e
             - beta6
             + (451.0 / 48.0 * PI * PI - 56198689.0 / 217728.0) * eta
             + 541.0 / 896.0 * eta * eta
             - 5605.0 / 2592.0 * eta * eta * eta;
-        let a7 = -4415.0 / 4032.0 * PI + 358675.0 / 6048.0 * PI * eta + 91495.0 / 1512.0 * PI * eta * eta - beta7;
+        let a7 = -4415.0 / 4032.0 * PI
+            + 358675.0 / 6048.0 * PI * eta
+            + 91495.0 / 1512.0 * PI * eta * eta
+            - beta7;
 
         let c2 = -a2 / 6.0;
         let c3 = -a3 / 5.0;
         let c4 = -a4 / 4.0 + 5.0 / 24.0 * a2 * a2;
         let c5 = -a5 / 3.0 + 3.0 / 5.0 * a2 * a3;
-        let c6 = -a6 / 2.0 - 3.0 / 4.0 * b6 + 23.0 / 24.0 * a4 * a2 + 12.0 / 25.0 * a3 * a3 - 67.0 / 144.0 * a2 * a2 * a2;
+        let c6 = -a6 / 2.0 - 3.0 / 4.0 * b6 + 23.0 / 24.0 * a4 * a2 + 12.0 / 25.0 * a3 * a3
+            - 67.0 / 144.0 * a2 * a2 * a2;
         let c7 = -a7 + 2.0 * a5 * a2 + 2.0 * a4 * a3 - 3.0 * a3 * a2 * a2;
 
         let p0 = -3.0 / (5.0 * a0);
@@ -113,15 +108,8 @@ impl VCalculator {
         let p3 = -5.0 / 2.0 * a3;
         let p4 = -5.0 * a4 + 5.0 * a2 * a2;
         let p5 = 5.0 * a5 - 10.0 * a3 * a2;
-        let p6 = 5.0 * a6
-            - 15.0 * b6
-            - 10.0 * a4 * a2
-            - 5.0 * a3 * a3
-            - 5.0 * a2 * a2 * a2;
-        let p7 = 5.0 / 2.0 * a7
-            - 5.0 * a5 * a2
-            - 5.0 * a4 * a3
-            + 15.0 / 2.0 * a3 * a2 * a2;
+        let p6 = 5.0 * a6 - 15.0 * b6 - 10.0 * a4 * a2 - 5.0 * a3 * a3 - 5.0 * a2 * a2 * a2;
+        let p7 = 5.0 / 2.0 * a7 - 5.0 * a5 * a2 - 5.0 * a4 * a3 + 15.0 / 2.0 * a3 * a2 * a2;
 
         let zeta0 = (5.0 / (256.0 * eta * tau_c)).powf(0.125);
         let zeta2 = zeta0 * zeta0;
@@ -200,7 +188,6 @@ impl VCalculator {
         let zeta5 = zeta4 * zeta;
         let zeta6 = zeta5 * zeta;
         let zeta7 = zeta6 * zeta;
-        
 
         self.v = zeta
             * (1.0
@@ -233,8 +220,7 @@ impl VCalculator {
     }
 
     pub fn psi_orb_for_last_v(&self) -> f64 {
-
-        let log_viv0 = (self.v/self.v0).ln();
+        let log_viv0 = (self.v / self.v0).ln();
 
         // Debug each sub-calculation
         let part1 = self.psi_c;
@@ -245,8 +231,6 @@ impl VCalculator {
         let part6 = self.p5 * self.v5 * log_viv0;
         let part7 = (self.p6 + 15.0 * self.b6 * log_viv0) * self.v6;
         let part8 = self.p7 * self.v7;
-
-        
 
         part1 + part2 * (1.0 + part3 + part4 + part5 + part6 + part7 + part8)
     }

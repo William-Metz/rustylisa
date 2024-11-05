@@ -1,8 +1,8 @@
-use core::f64;
-use crate::vcalculator::vcalculator::VCalculator;
-use crate::test_case::test_case::TestCase;
 use crate::data_point::DataPoint;
-#[derive(Clone,PartialEq,Debug)]
+use crate::test_case::test_case::TestCase;
+use crate::vcalculator::vcalculator::VCalculator;
+use core::f64;
+#[derive(Clone, PartialEq, Debug)]
 pub struct SpinEvolverClass {
     pub c_10: f64,
     pub c_12: f64,
@@ -56,5 +56,3 @@ pub struct SpinEvolverClass {
     pub ell_z_n: f64,
     pub ell_z_p: f64,
 }
-
-
