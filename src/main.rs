@@ -38,37 +38,7 @@ struct MyApp {
 impl Default for MyApp {
     fn default() -> Self {
         Self {
-            test_case: TestCase::new(
-                [0.0; 15],  // Uncertainties
-                39.0,        // beta (degrees)
-                24.0,        // psi (degrees)
-                0.0,         // lambda0
-                0.0,         // rho_0
-                5.0,         // theta_ (degrees)
-                268.5,       // phi_ (degrees)
-                0.0,         // theta_1 (example)
-                0.0,         // phi1 (example)
-                0.0,         // theta2 (example)
-                0.0,         // phi2 (example)
-                10000.0,     // M
-                500.0,       // T0
-                0.1,         // delta
-                0.0,         // chi1
-                0.0,         // chi2
-                10000000.0,  // R
-                268.5,       // omega_
-                None,        // chi_10_x
-                None,        // chi_10_y
-                None,        // chi_10_z
-                None,        // chi_20_x
-                None,        // chi_20_y
-                None,        // chi_20_z
-                0.0,         // Pn0
-                0,           // pn_order
-                2,           // detectors
-                50.0,        // deltaT
-                1.0,         // duration
-            ),
+            test_case: TestCase::new(),
             simulation_data: None,
             needs_simulation: false,
         }

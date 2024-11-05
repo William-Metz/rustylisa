@@ -6,10 +6,9 @@ impl WaveBuilder{
         // Calculate the received wave phase
 
         // Calculate basic angle multiples for the phase _Psi
-
-        
-        self.cos_ap_psi[0][1] = self.psi_r_dn.cos();
+        self.cos_ap_psi[0][1] = (self.psi_r_dn).cos();
         self.sin_ap_psi[0][1] = (self.psi_r_dn).sin();
+        
         self.cos_ap_psi[0][2] = self.cos_ap_psi[0][1]*self.cos_ap_psi[0][1] - self.sin_ap_psi[0][1]*self.sin_ap_psi[0][1];
         self.sin_ap_psi[0][2]  = 2.0*self.cos_ap_psi[0][1]*self.sin_ap_psi[0][1];
         self.cos_ap_psi[0][3] = self.cos_ap_psi[0][2]*self.cos_ap_psi[0][1] - self.sin_ap_psi[0][2]*self.sin_ap_psi[0][1];

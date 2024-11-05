@@ -5,7 +5,6 @@ use crate::wave_builder::wave_builder::WaveBuilder;
 impl WaveBuilder{
     pub fn did_step_ok(&mut self, step_num: u64) -> bool{  
 
-
         if ((step_num as f64)+2.0)*self.delta_tau > (self.spin_evolver.test_case.tau_c){
             return false
         }

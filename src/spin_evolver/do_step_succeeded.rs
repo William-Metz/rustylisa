@@ -3,8 +3,7 @@ use std::f64::consts::PI;
 use libm::atan2;
 
 impl SpinEvolverClass {
-
-  pub fn do_step_succeeded(&mut self) -> bool {
+    pub fn do_step_succeeded(&mut self) -> bool {
         // Check whether the step has been adjusted
         if self.delta_tau_hp >self.delta_tau_hf{
             self.adjust_the_past();  // if so, adjust the past values
@@ -59,8 +58,8 @@ impl SpinEvolverClass {
             }
         }
         else if ell_y_f > 0.0 && self.ell_y_n < 0.0{ 
-                if (ell_x_f*self.ell_y_n - self.ell_x_n*ell_y_f)/(self.ell_y_n-ell_y_f) < 0.0 {
-                    self.n_alpha_cycles = -1
+            if (ell_x_f*self.ell_y_n - self.ell_x_n*ell_y_f)/(self.ell_y_n-ell_y_f) < 0.0 {
+                self.n_alpha_cycles = -1
             }
         }
 
@@ -93,7 +92,7 @@ impl SpinEvolverClass {
         self.psi_pr_p= self.psi_pr_n;
         self.psi_pr_n= psi_pr_f;
 
-    
+
         self.alpha_p = self.alpha_n;
         self.alpha_n = atan2(self.ell_y_n,self.ell_x_n) + (self.n_alpha_cycles as f64)*2.0*PI;
 

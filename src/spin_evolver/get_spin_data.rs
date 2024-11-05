@@ -21,7 +21,8 @@ pub fn get_spin_data_at_time(&mut self, tau: f64) -> Option<SpinData> {
         data.chi_sz = 0.0;
         let v_for_tau =self.v_calc.v_at_time(tau);
         data.v = v_for_tau;
-        data.psi = self.test_case.lambda0 +self.v_calc.psi_orb_for_last_v() - 6.0 * v_for_tau.powi(3) * (v_for_tau / self.v_0).ln();
+        let tmp = self.v_calc.psi_orb_for_last_v();
+        data.psi = self.test_case.lambda0 + tmp - (6.0 * v_for_tau.powi(3) * (v_for_tau / self.v_0).ln());
         return Some(data);
     } else {
 

@@ -1,4 +1,4 @@
-use std::f64::consts::PI;
+use std::{f64::consts::PI, fmt::write};
 #[derive(Clone,PartialEq,Debug)]
 pub struct VCalculator {
     a0: f64,
@@ -210,7 +210,12 @@ impl VCalculator {
                 + self.c5 * zeta5
                 + (self.c6 - 1.5 * self.b6 * zeta.ln()) * zeta6
                 + self.c7 * zeta7);
-
+        self.v2 = self.v.powi(2);
+        self.v3 = self.v.powi(3);
+        self.v4 = self.v.powi(4);
+        self.v5 = self.v.powi(5);
+        self.v6 = self.v.powi(6);
+        self.v7 = self.v.powi(7);
         self.v
     }
 
@@ -230,16 +235,19 @@ impl VCalculator {
     pub fn psi_orb_for_last_v(&self) -> f64 {
 
         let log_viv0 = (self.v/self.v0).ln();
-        
-        //Left off
 
+        // Debug each sub-calculation
+        let part1 = self.psi_c;
+        let part2 = self.p0 / self.v5;
+        let part3 = self.p2 * self.v2;
+        let part4 = self.p3 * self.v3;
+        let part5 = self.p4 * self.v4;
+        let part6 = self.p5 * self.v5 * log_viv0;
+        let part7 = (self.p6 + 15.0 * self.b6 * log_viv0) * self.v6;
+        let part8 = self.p7 * self.v7;
 
-        self.psi_c + self.p0 / self.v5 * (1.0
-            + self.p2 * self.v2
-            + self.p3 * self.v3
-            + self.p4 * self.v4
-            + self.p5 * self.v5 * log_viv0
-            + (self.p6 + 15.0 * self.b6 * log_viv0) * self.v6
-            + self.p7 * self.v7)
+        let result = part1 + part2 * (1.0 + part3 + part4 + part5 + part6 + part7 + part8);
+
+        result
     }
 }

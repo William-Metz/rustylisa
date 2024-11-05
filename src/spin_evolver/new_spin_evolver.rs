@@ -91,7 +91,6 @@ impl SpinEvolverClass {
             spin_evolver.l_4 = 27.0/8.0 - 19.0/8.0*nu + nu2/24.0;
 
             // Initialize the velocity calculator
-            println!("Here and now");
             spin_evolver.v_calc = VCalculator::new(c_info.tau_c, c_info.delta, spin_evolver.chi1ell_, spin_evolver.chi2ell_);
 
             // Calculate the initial orbital angular momentum magnitude

@@ -29,10 +29,7 @@ impl WaveBuilder{
         else{
             vpower = self.vdn*self.vdn
         }
-        println!("{sum}, {vpower}");
         self.hp = sum*vpower;
- 
-
         if self.pn_order > 0{ 
             sum = 0.0;
             j_start = h0_p_last_index + 1;
@@ -127,6 +124,5 @@ impl WaveBuilder{
             let mut h0: f64 = 0.5*(1.0 - self.spin_evolver.test_case.delta*self.spin_evolver.test_case.delta)*self.spin_evolver.test_case.GM/(self.spin_evolver.test_case.R);
             self.hp = h0*self.hp;
             self.hx = h0*self.hx;
-            println!("h0: {h0},hp: {},hx: {}",self.hp,self.hx);
     }
 }
