@@ -1,4 +1,4 @@
-use std::{f64::consts::PI, fmt::write};
+use std::f64::consts::PI;
 #[derive(Clone,PartialEq,Debug)]
 pub struct VCalculator {
     a0: f64,
@@ -93,7 +93,7 @@ impl VCalculator {
         let a5 = (-4159.0 / 672.0 + 189.0 / 8.0 * eta) * PI - beta5;
         let a6 = 16447322263.0 / 139708800.0
             + 16.0 / 3.0 * PI * PI
-            - 856.0 / 105.0 * (16.0 as f64).ln()
+            - 856.0 / 105.0 * 16.0_f64.ln()
             - 1712.0 / 105.0 * gamma_e
             - beta6
             + (451.0 / 48.0 * PI * PI - 56198689.0 / 217728.0) * eta
@@ -246,8 +246,8 @@ impl VCalculator {
         let part7 = (self.p6 + 15.0 * self.b6 * log_viv0) * self.v6;
         let part8 = self.p7 * self.v7;
 
-        let result = part1 + part2 * (1.0 + part3 + part4 + part5 + part6 + part7 + part8);
+        
 
-        result
+        part1 + part2 * (1.0 + part3 + part4 + part5 + part6 + part7 + part8)
     }
 }

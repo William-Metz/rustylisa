@@ -23,7 +23,7 @@ pub fn get_spin_data_at_time(&mut self, tau: f64) -> Option<SpinData> {
         data.v = v_for_tau;
         let tmp = self.v_calc.psi_orb_for_last_v();
         data.psi = self.test_case.lambda0 + tmp - (6.0 * v_for_tau.powi(3) * (v_for_tau / self.v_0).ln());
-        return Some(data);
+        Some(data)
     } else {
 
         // If we have at least one nonzero spin, then we need to evolve
@@ -52,7 +52,7 @@ pub fn get_spin_data_at_time(&mut self, tau: f64) -> Option<SpinData> {
         let v_for_tau =self.v_calc.v_at_time(tau);
         data.v = v_for_tau;
         data.psi = self.test_case.lambda0 +self.v_calc.psi_orb_for_last_v() + f_n * self.psi_pr_n + f_p * self.psi_pr_p- 6.0 * v_for_tau.powi(3) * (v_for_tau / self.v_0).ln();
-        return Some(data);
+        Some(data)
     }
 
 }

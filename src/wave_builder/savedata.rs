@@ -16,7 +16,7 @@ impl WaveBuilder{
             time: t,
             hp: self.hp,
             hx: self.hx,
-            torb: torb,
+            torb,
             n_step: step
         };
         self.spin_evolver.data.push(data_point);

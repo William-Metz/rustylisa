@@ -57,16 +57,14 @@ impl SpinEvolverClass {
                 self.n_alpha_cycles = 1;
             }
         }
-        else if ell_y_f > 0.0 && self.ell_y_n < 0.0{ 
-            if (ell_x_f*self.ell_y_n - self.ell_x_n*ell_y_f)/(self.ell_y_n-ell_y_f) < 0.0 {
-                self.n_alpha_cycles = -1
-            }
+        else if ell_y_f > 0.0 && self.ell_y_n < 0.0 && (ell_x_f*self.ell_y_n - self.ell_x_n*ell_y_f)/(self.ell_y_n-ell_y_f) < 0.0 {
+            self.n_alpha_cycles = -1
         }
 
         // From here on, the future step just calculated becomes the present step
         // and the present step becomes the past step
         self.tau_p = self.tau_n;
-        self.tau_n = self.tau_n + self.delta_tau_hf;
+        self.tau_n += self.delta_tau_hf;
 
         self.chi1x_p = self.chi1x_n;
         self.chi1y_p = self.chi1y_n;
@@ -109,7 +107,7 @@ impl SpinEvolverClass {
             }
             else{
                 self.delta_tau_hp = self.delta_tau_hf;// store the previous step
-                self.delta_tau_hf =self.delta_tau_hf/2.0;  // reduce the next step size by two
+                self.delta_tau_hf /= 2.0;  // reduce the next step size by two
             }
         }
         else{ // if we don't need a smaller step, repeat the current step

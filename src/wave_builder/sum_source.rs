@@ -18,7 +18,7 @@ impl WaveBuilder{
         let mut j_start: usize; 
         let mut sum: f64 = 0.0;
         for j in 0.. h0_p_last_index {
-            sum = sum + self.a[j]*self.w[j];
+            sum += self.a[j]*self.w[j];
 
         }
         let mut vpower: f64;
@@ -34,44 +34,44 @@ impl WaveBuilder{
             sum = 0.0;
             j_start = h0_p_last_index + 1;
             for j in j_start.. h1_p_last_index{
-                sum = sum + self.a[j]*self.w[j]
+                sum += self.a[j]*self.w[j]
             }
-            vpower = vpower*self.vdn;
+            vpower *= self.vdn;
             if do_v_deriv {
-                vpower = 1.5*vpower;
+                vpower *= 1.5;
             }
-            self.hp = self.hp + sum*vpower
+            self.hp += sum*vpower
         }
         if self.pn_order> 1 {
             sum = 0.0;
             j_start = h1_p_last_index + 1;
             for j in j_start.. h2_p_last_index{
-                sum = sum + self.a[j]*self.w[j];
+                sum += self.a[j]*self.w[j];
             }
-            vpower = vpower*self.vdn;
+            vpower *= self.vdn;
             if do_v_deriv {
-                vpower = 1.33333333333333333*vpower;
+                vpower *= 1.333_333_333_333_333_3;
             }
-            self.hp = self.hp + sum*vpower;
+            self.hp += sum*vpower;
         }
         if self.pn_order > 2{ 
             j_start = h2_p_last_index + 1;
             sum = 0.0;
             for j in j_start.. h3_p_last_index{
-                sum = sum + self.a[j]*self.w[j];
+                sum += self.a[j]*self.w[j];
             }
-            vpower = vpower*self.vdn;
+            vpower *= self.vdn;
             if do_v_deriv {
-                vpower = 1.25*vpower;
+                vpower *= 1.25;
             }
-            self.hp = self.hp + sum*vpower;
+            self.hp += sum*vpower;
         }
 
         // now assemble cross polarization
         sum = 0.0;
         j_start = h3_p_last_index + 1;
         for j in j_start.. h0_x_last_index{
-            sum = sum + self.a[j]*self.w[j];
+            sum += self.a[j]*self.w[j];
         }
         if do_v_deriv{ 
             vpower = 2.0*self.vdn;
@@ -85,44 +85,44 @@ impl WaveBuilder{
             sum = 0.0;
             j_start = h0_x_last_index + 1;
             for j in j_start.. h1_x_last_index{
-                sum = sum + self.a[j]*self.w[j];
+                sum += self.a[j]*self.w[j];
             }
-            vpower = vpower*self.vdn;
+            vpower *= self.vdn;
             if do_v_deriv {
-                vpower = 1.5*vpower;
+                vpower *= 1.5;
             }
-            self.hx = self.hx + sum*vpower;
+            self.hx += sum*vpower;
         }
 
         if self.pn_order > 1 {
             sum = 0.0;
             j_start = h1_x_last_index + 1;
             for j in j_start.. h2_x_last_index{
-                sum = sum + self.a[j]*self.w[j];
+                sum += self.a[j]*self.w[j];
             }
-            vpower = vpower*self.vdn;
+            vpower *= self.vdn;
             if do_v_deriv {
-                vpower = 1.3333333333333333*vpower;
+                vpower *= 1.3333333333333333;
             }
-            self.hx = self.hx + sum*vpower
+            self.hx += sum*vpower
         }
 
         if self.pn_order > 2 {
             j_start = h2_x_last_index + 1;
             sum = 0.0;
             for j in j_start.. h3_x_last_index{
-            sum = sum + self.a[j]*self.w[j];
+            sum += self.a[j]*self.w[j];
             }
-            vpower = vpower*self.vdn;
+            vpower *= self.vdn;
             if do_v_deriv {
-                vpower = 1.25*vpower;
+                vpower *= 1.25;
             }
-            self.hx = self.hx + sum*vpower;
+            self.hx += sum*vpower;
         }
 
             // Calculate overall wave amplitude constant
-            let mut h0: f64 = 0.5*(1.0 - self.spin_evolver.test_case.delta*self.spin_evolver.test_case.delta)*self.spin_evolver.test_case.GM/(self.spin_evolver.test_case.R);
-            self.hp = h0*self.hp;
-            self.hx = h0*self.hx;
+            let h0: f64 = 0.5*(1.0 - self.spin_evolver.test_case.delta*self.spin_evolver.test_case.delta)*self.spin_evolver.test_case.GM/(self.spin_evolver.test_case.R);
+            self.hp *= h0;
+            self.hx *= h0;
     }
 }

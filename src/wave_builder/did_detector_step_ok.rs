@@ -49,10 +49,10 @@ impl WaveBuilder{
 
             // We have completed the detector step successfully
 
-            return true;
+            true
         }
         else {
-            return false;
+            false
         }
     }
 }

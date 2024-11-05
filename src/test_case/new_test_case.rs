@@ -1,5 +1,5 @@
 use crate::test_case::test_case::TestCase;
-use crate::{constants::{YEAR, G, HUBBLECONSTANT}, vcalculator::vcalculator::VCalculator}; 
+use crate::constants::{YEAR, G, HUBBLECONSTANT}; 
 use std::f64::consts::PI;
 
 
@@ -42,17 +42,17 @@ let mut case = Self {
 }; 
         // Convert angles from degrees to radians
         let radians_from_degrees = PI / 180.0;
-        case.beta_ = radians_from_degrees * case.beta_;
-        case.psi = radians_from_degrees * case.psi;
-        case.lambda0 = radians_from_degrees * case.lambda0;
-        case.rho_0 = radians_from_degrees * case.rho_0;
-        case.theta_ = radians_from_degrees * case.theta_;
-        case.phi_ = radians_from_degrees * case.phi_;
-        case.theta_1 = radians_from_degrees * case.theta_1;
-        case.phi_1 = radians_from_degrees * case.phi_1;
-        case.theta_2 = radians_from_degrees * case.theta_2;
-        case.phi_2 = radians_from_degrees * case.phi_2;
-        case.R = case.R*YEAR;
+        case.beta_ *= radians_from_degrees;
+        case.psi *= radians_from_degrees;
+        case.lambda0 *= radians_from_degrees;
+        case.rho_0 *= radians_from_degrees;
+        case.theta_ *= radians_from_degrees;
+        case.phi_ *= radians_from_degrees;
+        case.theta_1 *= radians_from_degrees;
+        case.phi_1 *= radians_from_degrees;
+        case.theta_2 *= radians_from_degrees;
+        case.phi_2 *= radians_from_degrees;
+        case.R *= YEAR;
 
         // Use imported constants G and GM_OMEGA_E
         case.GM = G * case.M; // G is the gravitational constant from the constants module
@@ -82,8 +82,8 @@ let mut case = Self {
         //Caclutate run duratation
         case.n_steps= (case.duration*YEAR/case.delta_t).round() as u64;
 
-        let mut v_c = VCalculator::new(case.tau_c,case.delta, 0.0, 0.0); 
-        let v1 = v_c.v_at_time(0.0); 
+        //let mut v_c = VCalculator::new(case.tau_c,case.delta, 0.0, 0.0); 
+        //let v1 = v_c.v_at_time(0.0); 
         case
 
     }

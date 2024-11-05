@@ -240,7 +240,7 @@ impl SpinEvolverClass {
             else{
                 spin_evolver.n_alpha_cycles = 0;
             }
-            spin_evolver.alpha_n = spin_evolver.alpha_n + (spin_evolver.n_alpha_cycles as f64)*2.0*PI;
+            spin_evolver.alpha_n += (spin_evolver.n_alpha_cycles as f64)*2.0*PI;
 
             // Finally, update the times
             spin_evolver.tau_p = 0.0;
