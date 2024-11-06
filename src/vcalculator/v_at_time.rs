@@ -1,5 +1,5 @@
 use crate::vcalculator::vcalculator::VCalculator;
-impl VCalculator{
+impl VCalculator {
     pub fn v_at_time(&mut self, tau: f64) -> f64 {
         let zeta = (5.0 / (256.0 * self.eta * (self.tau_c - tau))).powf(0.125);
         let zeta2 = zeta * zeta;
@@ -25,5 +25,4 @@ impl VCalculator{
         self.v7 = self.v.powi(7);
         self.v
     }
-
 }

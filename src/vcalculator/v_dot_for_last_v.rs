@@ -1,6 +1,5 @@
-
 use crate::vcalculator::vcalculator::VCalculator;
-impl VCalculator{
+impl VCalculator {
     pub fn v_dot_for_last_v(&self) -> f64 {
         self.a0 / 3.0
             * self.v7
@@ -13,5 +12,4 @@ impl VCalculator{
                 + (self.a6 + self.b6 * self.v.ln()) * self.v6
                 + self.a7 * self.v7)
     }
-
 }

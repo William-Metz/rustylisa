@@ -6,8 +6,8 @@
 // This project is open for educational and personal use only.
 // No warranty is provided, and this is not an official product.
 // ------------------------------------------------------------
-use core::f64;
 use crate::spin_evolver::spin_evolver::SpinEvolverClass;
+use core::f64;
 
 #[derive(Clone, PartialEq, Debug)]
 pub struct WaveBuilder {
@@ -40,5 +40,3 @@ pub struct WaveBuilder {
     pub sin_am_psi: [[f64; 6]; 6],
     pub sin_ap_psi: [[f64; 6]; 6],
 }
-
-

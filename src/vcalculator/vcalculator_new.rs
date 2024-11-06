@@ -139,5 +139,4 @@ impl VCalculator {
             psi_c,
         }
     }
-
 }

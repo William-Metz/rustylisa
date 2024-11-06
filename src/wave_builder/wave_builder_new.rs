@@ -1,10 +1,7 @@
 use crate::{
     constants::HUBBLECONSTANT, spin_evolver::spin_evolver::SpinEvolverClass,
-    test_case::test_case::TestCase,
-    wave_builder::wave_builder::WaveBuilder,
-
+    test_case::test_case::TestCase, wave_builder::wave_builder::WaveBuilder,
 };
-
 
 impl WaveBuilder {
     pub fn new(c_info: &TestCase) -> Self {

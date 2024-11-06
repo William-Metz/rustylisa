@@ -3,7 +3,7 @@ use std::fs::File;
 use std::io::{BufWriter, Write};
 
 impl CaseSupervisor {
-   pub fn save_to_csv(&self) {
+    pub fn save_to_csv(&self) {
         let file = File::create("data.csv").expect("Could not create file");
         let mut writer = BufWriter::new(file);
 

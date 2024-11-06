@@ -14,5 +14,3 @@ pub struct CaseSupervisor {
     pub wave: WaveBuilder,
     pub delta_tau: f64,
 }
-
-

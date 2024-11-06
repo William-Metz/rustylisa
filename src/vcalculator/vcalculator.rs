@@ -47,5 +47,3 @@ pub struct VCalculator {
     pub tau_c: f64,
     pub psi_c: f64,
 }
-
-

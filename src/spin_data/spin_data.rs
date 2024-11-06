@@ -19,5 +19,3 @@ pub struct SpinData {
     pub chi_sz: f64,
     pub psi: f64,
 }
-
-

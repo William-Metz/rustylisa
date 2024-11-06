@@ -1,7 +1,5 @@
-
 use crate::vcalculator::vcalculator::VCalculator;
-impl VCalculator{
-
+impl VCalculator {
     pub fn psi_orb_for_last_v(&self) -> f64 {
         let log_viv0 = (self.v / self.v0).ln();
 
