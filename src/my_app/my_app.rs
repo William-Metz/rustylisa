@@ -14,17 +14,20 @@ macro_rules! ui_label_drag {
         )*
     };
 }
-// Now, your `MyApp` struct and `update` implementation can use `ui_label_drag!`.
-
+enum View {
+    Input,
+    Results,
+}
 pub struct MyApp {
     test_cases: Vec<TestCase>,
 
-    // Simulation data
     simulation_data: Vec<Option<Vec<DataPoint>>>, // Store simulation data per test case
 
     needs_simulation: Vec<bool>, // Track if each test case needs simulation
 
     selected_tab: usize, // Track the selected test case
+
+    current_view: View, // New field for tracking current view
 }
 
 impl Default for MyApp {
@@ -34,105 +37,123 @@ impl Default for MyApp {
             simulation_data: vec![None],
             needs_simulation: vec![false],
             selected_tab: 0,
+            current_view: View::Input,
         }
     }
 }
 
 impl eframe::App for MyApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        egui::CentralPanel::default().show(ctx, |ui| {
-            ui.heading("Input Parameters");
-
-            // Display each test case with collapsible input sections
-            for (i, test_case) in self.test_cases.iter_mut().enumerate() {
-                ui.collapsing(format!("Test Case {}", i + 1), |ui| {
-                    egui::Grid::new(format!("param_grid_{}", i))
-                        .num_columns(2)
-                        .spacing([40.0, 4.0])
-                        .show(ui, |ui| {
-                            ui_label_drag!(ui, test_case,
-                                "M:" => M,
-                                "delta:" => delta,
-                                "t_0:" => t_0,
-                                "R:" => R,
-                                "beta:" => beta_,
-                                "psi:" => psi,
-                                "lambda0:" => lambda0,
-                                "theta:" => theta_,
-                                "phi:" => phi_,
-                                "chi1:" => chi1,
-                                "theta_1:" => theta_1,
-                                "phi_1:" => phi_1,
-                                "chi2:" => chi2,
-                                "theta_2:" => theta_2,
-                                "phi_2:" => phi_2,
-                                "rho_0:" => rho_0,
-                                "pn_order:" => pn_order,
-                                "detectors:" => detectors,
-                                "delta_t:" => delta_t,
-                                "duration:" => duration,
-                            );
-                        });
-
-                    // Button to run simulation for this specific test case
-                    if ui.button("Run Simulation").clicked() {
-                        self.needs_simulation[i] = true;
-                    }
-                });
-            }
-
-            // Add a new test case
-            if ui.button("Add New Test Case").clicked() {
-                self.test_cases.push(TestCase::new());
-                self.simulation_data.push(None);
-                self.needs_simulation.push(false);
-            }
-
-            ui.separator();
-
-            // Tab selection using ComboBox
-            ui.label("Select Test Case for Plot:");
-            egui::ComboBox::from_label("Test Case")
-                .selected_text(format!("Test Case {}", self.selected_tab + 1))
-                .show_ui(ui, |ui| {
-                    for i in 0..self.test_cases.len() {
-                        ui.selectable_value(
-                            &mut self.selected_tab,
-                            i,
-                            format!("Test Case {}", i + 1),
-                        );
-                    }
-                });
-
-            ui.separator();
-
-            // Display plot for the selected test case
-            ui.heading(format!(
-                "Gravitational Wave Plot for Test Case {}",
-                self.selected_tab + 1
-            ));
-            if let Some(data) = &self.simulation_data[self.selected_tab] {
-                let hp_points: PlotPoints =
-                    data.iter().map(|point| [point.time, point.hp]).collect();
-                let hx_points: PlotPoints =
-                    data.iter().map(|point| [point.time, point.hx]).collect();
-
-                let hp_line = Line::new(hp_points).name("HP");
-                let hx_line = Line::new(hx_points).name("HX");
-
-                Plot::new(format!("wave_plot_{}", self.selected_tab))
-                    .view_aspect(2.0)
-                    .legend(Legend::default())
-                    .show(ui, |plot_ui| {
-                        plot_ui.line(hp_line);
-                        plot_ui.line(hx_line);
-                    });
-            } else {
-                ui.label("No simulation data available. Please run the simulation.");
-            }
+        // Navigation buttons
+        egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
+            ui.horizontal(|ui| {
+                if ui.button("Input Parameters").clicked() {
+                    self.current_view = View::Input;
+                }
+                if ui.button("Simulation Results").clicked() {
+                    self.current_view = View::Results;
+                }
+            });
         });
 
-        // Run simulations
+        // Display content based on the current view
+        match self.current_view {
+            View::Input => {
+                egui::CentralPanel::default().show(ctx, |ui| {
+                    ui.heading("Input Parameters");
+
+                    for (i, test_case) in self.test_cases.iter_mut().enumerate() {
+                        ui.collapsing(format!("Test Case {}", i + 1), |ui| {
+                            egui::Grid::new(format!("param_grid_{}", i))
+                                .num_columns(2)
+                                .spacing([40.0, 4.0])
+                                .show(ui, |ui| {
+                                    ui_label_drag!(ui, test_case,
+                                        "M:" => M,
+                                        "delta:" => delta,
+                                        "t_0:" => t_0,
+                                        "R:" => R,
+                                        "beta:" => beta_,
+                                        "psi:" => psi,
+                                        "lambda0:" => lambda0,
+                                        "theta:" => theta_,
+                                        "phi:" => phi_,
+                                        "chi1:" => chi1,
+                                        "theta_1:" => theta_1,
+                                        "phi_1:" => phi_1,
+                                        "chi2:" => chi2,
+                                        "theta_2:" => theta_2,
+                                        "phi_2:" => phi_2,
+                                        "rho_0:" => rho_0,
+                                        "pn_order:" => pn_order,
+                                        "detectors:" => detectors,
+                                        "delta_t:" => delta_t,
+                                        "duration:" => duration,
+                                    );
+                                });
+
+                            if ui.button("Run Simulation").clicked() {
+                                self.needs_simulation[i] = true;
+                            }
+                        });
+                    }
+
+                    if ui.button("Add New Test Case").clicked() {
+                        self.test_cases.push(TestCase::new());
+                        self.simulation_data.push(None);
+                        self.needs_simulation.push(false);
+                    }
+                });
+            }
+            View::Results => {
+                egui::CentralPanel::default().show(ctx, |ui| {
+                    ui.heading("Simulation Results");
+
+                    // Tab for selecting the test case to display
+                    ui.label("Select Test Case for Plot:");
+                    egui::ComboBox::from_label("Test Case")
+                        .selected_text(format!("Test Case {}", self.selected_tab + 1))
+                        .show_ui(ui, |ui| {
+                            for i in 0..self.test_cases.len() {
+                                ui.selectable_value(
+                                    &mut self.selected_tab,
+                                    i,
+                                    format!("Test Case {}", i + 1),
+                                );
+                            }
+                        });
+
+                    ui.separator();
+
+                    // Display plot for the selected test case
+                    ui.heading(format!(
+                        "Gravitational Wave Plot for Test Case {}",
+                        self.selected_tab + 1
+                    ));
+                    if let Some(data) = &self.simulation_data[self.selected_tab] {
+                        let hp_points: PlotPoints =
+                            data.iter().map(|point| [point.time, point.hp]).collect();
+                        let hx_points: PlotPoints =
+                            data.iter().map(|point| [point.time, point.hx]).collect();
+
+                        let hp_line = Line::new(hp_points).name("HP");
+                        let hx_line = Line::new(hx_points).name("HX");
+
+                        Plot::new(format!("wave_plot_{}", self.selected_tab))
+                            .view_aspect(2.0)
+                            .legend(Legend::default())
+                            .show(ui, |plot_ui| {
+                                plot_ui.line(hp_line);
+                                plot_ui.line(hx_line);
+                            });
+                    } else {
+                        ui.label("No simulation data available. Please run the simulation.");
+                    }
+                });
+            }
+        }
+
+        // Run simulations as needed
         let mut indices_to_simulate = vec![];
         for (i, needs_sim) in self.needs_simulation.iter().enumerate() {
             if *needs_sim {
