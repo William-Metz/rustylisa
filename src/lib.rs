@@ -9,6 +9,7 @@
 pub mod case_supervisor;
 pub mod constants;
 pub mod data_point;
+pub mod my_app;
 pub mod spin_data;
 pub mod spin_evolver;
 pub mod test_case;
