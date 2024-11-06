@@ -8,18 +8,10 @@
 // ------------------------------------------------------------
 #![allow(non_snake_case)]
 #![allow(clippy::module_inception)]
-mod case_supervisor;
-mod constants;
-mod data_point;
-mod spin_data;
-mod spin_evolver;
-mod test_case;
-mod vcalculator;
-mod wave_builder;
 
-use crate::case_supervisor::case_supervisor::CaseSupervisor;
-use crate::data_point::DataPoint;
-use crate::test_case::test_case::TestCase;
+use rustlisa::case_supervisor::case_supervisor::CaseSupervisor;
+use rustlisa::data_point::DataPoint;
+use rustlisa::test_case::test_case::TestCase;
 
 use eframe::egui;
 use egui_plot::{Legend, Line, Plot, PlotPoints};
