@@ -4,7 +4,10 @@ use crate::test_case::test_case::TestCase;
 
 use eframe::egui;
 use egui_plot::{Legend, Line, Plot, PlotPoints};
+use tokio;
 
+use std::sync::{Arc, Mutex};
+use tokio::runtime::Runtime;
 macro_rules! ui_label_drag {
     ($ui:ident, $struct:expr, $( $label:literal => $field:ident ),* $(,)?) => {
         $(
@@ -14,36 +17,51 @@ macro_rules! ui_label_drag {
         )*
     };
 }
+#[derive(Clone)]
 enum View {
     Input,
     Results,
 }
+
 pub struct MyApp {
     test_cases: Vec<TestCase>,
-
-    simulation_data: Vec<Option<Vec<DataPoint>>>, // Store simulation data per test case
-
-    needs_simulation: Vec<bool>, // Track if each test case needs simulation
-
-    selected_tab: usize, // Track the selected test case
-
-    current_view: View, // New field for tracking current view
+    simulation_data: Arc<Mutex<Vec<Option<Vec<DataPoint>>>>>, // Shared simulation data
+    needs_simulation: Vec<bool>,
+    selected_tab: usize,
+    current_view: View,
+    runtime: Arc<Runtime>, // Shared runtime
 }
 
 impl Default for MyApp {
     fn default() -> Self {
         Self {
-            test_cases: vec![TestCase::new()], // Start with one test case
-            simulation_data: vec![None],
+            test_cases: vec![TestCase::new()],
+            simulation_data: Arc::new(Mutex::new(vec![None])),
             needs_simulation: vec![false],
             selected_tab: 0,
             current_view: View::Input,
+            runtime: Arc::new(Runtime::new().expect("Failed to create Tokio runtime")),
+        }
+    }
+}
+
+impl Clone for MyApp {
+    fn clone(&self) -> Self {
+        Self {
+            test_cases: self.test_cases.clone(),
+            simulation_data: Arc::clone(&self.simulation_data), // Share simulation data
+            needs_simulation: self.needs_simulation.clone(),
+            selected_tab: self.selected_tab,
+            current_view: self.current_view.clone(),
+            runtime: Arc::clone(&self.runtime),
         }
     }
 }
 
 impl eframe::App for MyApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        let mut simulations_to_run = vec![];
+
         // Navigation buttons
         egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
             ui.horizontal(|ui| {
@@ -52,6 +70,9 @@ impl eframe::App for MyApp {
                 }
                 if ui.button("Simulation Results").clicked() {
                     self.current_view = View::Results;
+                }
+                if ui.button("Run All Simulations").clicked() {
+                    simulations_to_run.extend(0..self.test_cases.len()); // Queue all simulations
                 }
             });
         });
@@ -93,14 +114,15 @@ impl eframe::App for MyApp {
                                 });
 
                             if ui.button("Run Simulation").clicked() {
-                                self.needs_simulation[i] = true;
+                                simulations_to_run.push(i); // Queue this simulation
                             }
                         });
                     }
 
                     if ui.button("Add New Test Case").clicked() {
                         self.test_cases.push(TestCase::new());
-                        self.simulation_data.push(None);
+                        let mut data = self.simulation_data.lock().unwrap();
+                        data.push(None);
                         self.needs_simulation.push(false);
                     }
                 });
@@ -125,16 +147,17 @@ impl eframe::App for MyApp {
 
                     ui.separator();
 
-                    // Display plot for the selected test case
+                    // Access simulation data safely using the mutex
+                    let data = self.simulation_data.lock().unwrap();
                     ui.heading(format!(
                         "Gravitational Wave Plot for Test Case {}",
                         self.selected_tab + 1
                     ));
-                    if let Some(data) = &self.simulation_data[self.selected_tab] {
+                    if let Some(ref points) = data[self.selected_tab] {
                         let hp_points: PlotPoints =
-                            data.iter().map(|point| [point.time, point.hp]).collect();
+                            points.iter().map(|point| [point.time, point.hp]).collect();
                         let hx_points: PlotPoints =
-                            data.iter().map(|point| [point.time, point.hx]).collect();
+                            points.iter().map(|point| [point.time, point.hx]).collect();
 
                         let hp_line = Line::new(hp_points).name("HP");
                         let hx_line = Line::new(hx_points).name("HX");
@@ -153,35 +176,20 @@ impl eframe::App for MyApp {
             }
         }
 
-        // Run simulations as needed
-        let mut indices_to_simulate = vec![];
-        for (i, needs_sim) in self.needs_simulation.iter().enumerate() {
-            if *needs_sim {
-                indices_to_simulate.push(i);
-            }
+        for i in simulations_to_run {
+            let testcase = self.test_cases[i].clone();
+            let simulation_data = Arc::clone(&self.simulation_data);
+            let runtime = Arc::clone(&self.runtime);
+            runtime.spawn(async move {
+                let mut case_supervisor = CaseSupervisor::new(testcase);
+
+                // Run the simulation
+                case_supervisor.run_simulation();
+
+                // Store the simulation data
+                let mut data = simulation_data.lock().expect("Failed to lock mutex");
+                data[i] = Some(case_supervisor.wave.spin_evolver.data.clone());
+            });
         }
-
-        for &i in &indices_to_simulate {
-            self.run_simulation(i);
-            self.needs_simulation[i] = false;
-        }
-    }
-}
-
-impl MyApp {
-    fn run_simulation(&mut self, index: usize) {
-        use std::time::Instant;
-
-        let start = Instant::now();
-
-        let testcase = self.test_cases[index].clone();
-        let mut case_supervisor = CaseSupervisor::new(testcase);
-        case_supervisor.run_simulation();
-
-        let duration = start.elapsed();
-        println!("Simulation Time elapsed: {:?}", duration);
-
-        // Store the simulation data
-        self.simulation_data[index] = Some(case_supervisor.wave.spin_evolver.data.clone());
     }
 }
