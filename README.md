@@ -29,7 +29,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="[[ttps://github.com/github_username/repo_name](https://github.com/William-Metz/rustylisa)](https://github.com/William-Metz/rustylisa.git)">
+  <a href="[[https://github.com/github_username/repo_name](https://github.com/William-Metz/rustylisa)](https://github.com/William-Metz/rustylisa.git)">
     <img src="images/LISA_Logo.jpg" alt="Logo" width="240" height="240">
   </a>
 
@@ -38,7 +38,7 @@
   <p align="center">
     A gravitational waveform generator built in Rust
     <br />
-    <a href="https://github.com/William-Metz/rustylisa"><strong>Explore the docs »</strong></a>
+    <a href="https://lisaresearch.sites.pomona.edu/"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/William-Metz/rustylisa">View Demo</a>
