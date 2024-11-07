@@ -1,97 +1,241 @@
+<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
+<a id="readme-top"></a>
+<!--
+*** Thanks for checking out the Best-README-Template. If you have a suggestion
+*** that would make this better, please fork the repo and create a pull request
+*** or simply open an issue with the tag "enhancement".
+*** Don't forget to give the project a star!
+*** Thanks again! Now go create something AMAZING! :D
+-->
 
-RustyLISA
-RustyLISA is a Rust library designed to simulate gravitational wave signals, particularly those detected by the Laser Interferometer Space Antenna (LISA). Built for performance and extensibility, RustyLISA leverages the power of Rust to run efficient, parallelized simulations. This library is useful for researchers, engineers, and enthusiasts interested in gravitational wave astrophysics.
 
-Table of Contents
-Installation
-Getting Started
-Usage
-Parameters
-Contributing
-License
-Installation
-To include RustyLISA in your Rust project, add it as a dependency in your Cargo.toml:
 
-toml
-Copy code
-[dependencies]
-rustylisa = { git = "https://github.com/William-Metz/rustylisa.git" }
-After that, run:
+<!-- PROJECT SHIELDS -->
+<!--
+*** I'm using markdown "reference style" links for readability.
+*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
+*** See the bottom of this document for the declaration of the reference variables
+*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
+*** https://www.markdownguide.org/basic-syntax/#reference-style-links
+-->
+[![Contributors][contributors-shield]](https://github.com/William-Metz/rustylisa/graphs/contributors)
+[![Forks][forks-shield]](https://github.com/William-Metz/rustylisa/forks)
+[![Stargazers][stars-shield]](https://github.com/William-Metz/rustylisa/stargazers)
+[![Issues][issues-shield]](https://github.com/William-Metz/rustylisa/issues)
+[![MIT License][license-shield]](https://github.com/William-Metz/rustylisa/blob/main/LICENSE)
+[![LinkedIn][linkedin-shield]](https://www.linkedin.com/in/william-metz/)
 
-sh
-Copy code
-cargo build
-To build RustyLISA as a standalone library, clone the repository and use:
 
-sh
-Copy code
-git clone https://github.com/William-Metz/rustylisa.git
-cd rustylisa
-cargo build --release
-Getting Started
-To start using RustyLISA, import the library in your Rust code:
 
-rust
-Copy code
-use rustylisa::simulation;
-You can then create a new simulation instance and configure it according to your needs.
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="[https://github.com/github_username/repo_name](https://github.com/William-Metz/rustylisa.git)">
+    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  </a>
 
-Basic Example
-Here’s a minimal example to initialize a simulation:
+<h3 align="center">Rusty LISA</h3>
 
-rust
-Copy code
-use rustylisa::simulation::SimulationConfig;
+  <p align="center">
+    project_description
+    <br />
+    <a href="https://github.com/github_username/repo_name"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/github_username/repo_name">View Demo</a>
+    ·
+    <a href="https://github.com/github_username/repo_name/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    ·
+    <a href="https://github.com/github_username/repo_name/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+  </p>
+</div>
 
-fn main() {
-    let config = SimulationConfig::new()
-        .set_mass(1.4) // Mass of source (solar masses)
-        .set_distance(10.0) // Distance from source (Mpc)
-        .set_time_duration(1.0); // Time duration of the simulation (years)
 
-    let simulation = rustylisa::run_simulation(config);
-    println!("Simulation results: {:?}", simulation);
-}
-Usage
-The library provides flexible configuration options to tailor simulations for different types of gravitational wave sources. You can adjust parameters to define characteristics of the wave source, the detector, and the environmental conditions.
 
-To run a simulation:
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#built-with">Built With</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+  </ol>
+</details>
 
-Define parameters for the wave source.
-Configure LISA’s settings.
-Execute the simulation and analyze results.
-For additional customization, refer to the parameter list below.
 
-Parameters
-Here’s a description of the available parameters to configure the RustyLISA simulation:
 
-Parameter	Type	Description	Default
-mass	f64	Mass of the gravitational wave source in solar masses.	1.4
-distance	f64	Distance from LISA to the source in megaparsecs (Mpc).	10.0
-time_duration	f64	Duration of the simulation in years.	1.0
-sampling_rate	f64	Rate at which signals are sampled in Hertz (Hz).	1.0
-frequency_range	(f64, f64)	Frequency range of the gravitational waves to detect (min, max) in Hertz.	(1e-4, 1.0)
-inclination_angle	f64	Angle of the source’s orbit relative to the detector plane in degrees.	0.0
-phase_shift	f64	Phase shift of the signal at the beginning of the observation period.	0.0
-initial_position	(f64, f64, f64)	Initial (x, y, z) position of the source in space (in AU, Astronomical Units).	(0.0, 0.0, 0.0)
-velocity	(f64, f64, f64)	Initial velocity vector (vx, vy, vz) of the source in AU per year.	(0.0, 0.0, 0.0)
-output_precision	u32	Number of decimal places for output precision.	5
-noise_level	f64	Background noise level for signal processing, useful for simulating real-world interference.	0.01
-Detailed Parameter Explanations
-mass: Mass of the source, which affects the gravitational wave’s amplitude.
-distance: Defines the distance to the source; further sources will result in weaker signals.
-time_duration: Length of the simulation in years; longer durations require more computational resources.
-sampling_rate: Determines the number of samples per second; higher rates yield more precise signals.
-frequency_range: Defines the range of wave frequencies to detect; useful for isolating signals.
-inclination_angle: Adjusts the orientation of the source’s orbit relative to LISA.
-phase_shift: Sets the initial phase of the waveform at the start of the simulation.
-initial_position: Starting position of the source, allowing for spatial modeling of source trajectories.
-velocity: Initial velocity vector, enabling simulations of moving wave sources.
-output_precision: Precision of the output values, affecting storage size and readability.
-noise_level: Adds synthetic noise to the signal, ideal for testing noise-cancellation algorithms.
-Contributing
-Contributions are welcome! Please fork the repository and submit a pull request, or open an issue for discussion. Ensure that any changes follow Rust coding standards and are tested thoroughly.
+<!-- ABOUT THE PROJECT -->
+## About The Project
+RustyLISA is a Rust library designed to simulate gravitational wave signals, particularly those detected by the Laser Interferometer Space Antenna (LISA). Built for performance and extensibility, RustyLISA leverages the power of Rust to run efficient, parallelized simulations. This tool is useful for researchers, engineers, and enthusiasts interested in gravitational wave astrophysics.
 
-License
-This project is licensed under the MIT License. See the LICENSE file for more details.
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+
+
+### Built With
+Rust
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- GETTING STARTED -->
+## Getting Started
+
+This is an example of how you may give instructions on setting up your project locally.
+To get a local copy up and running follow these simple example steps.
+
+### Prerequisites
+
+* Install rust
+  ```sh
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+  ```
+
+### Installation
+
+1. Clone the repository and cd in
+   ```sh
+   git clone https://github.com/William-Metz/rustylisa.git
+   cd rustylisa
+   ```
+
+2. Build release
+   ```sh
+   cargo build --release
+   ```
+3. Run build
+   ```sh
+   ./target/release/rustylisa
+   ```
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- USAGE EXAMPLES -->
+## Usage
+
+Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+
+_For more examples, please refer to the [Documentation](https://example.com)_
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- ROADMAP -->
+## Roadmap
+
+- [ ] Feature 1
+- [ ] Feature 2
+- [ ] Feature 3
+    - [ ] Nested Feature
+
+See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- CONTRIBUTING -->
+## Contributing
+
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give the project a star! Thanks again!
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+### Top contributors:
+
+<a href="https://github.com/github_username/repo_name/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=github_username/repo_name" alt="contrib.rocks image" />
+</a>
+
+
+
+<!-- LICENSE -->
+## License
+
+Distributed under the MIT License. See `LICENSE.txt` for more information.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- CONTACT -->
+## Contact
+
+Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
+
+Project Link: [https://github.com/github_username/repo_name](https://github.com/github_username/repo_name)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- ACKNOWLEDGMENTS -->
+## Acknowledgments
+
+* []()
+* []()
+* []()
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[contributors-shield]: https://img.shields.io/github/contributors/github_username/repo_name.svg?style=for-the-badge
+[contributors-url]: https://github.com/github_username/repo_name/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/github_username/repo_name.svg?style=for-the-badge
+[forks-url]: https://github.com/github_username/repo_name/network/members
+[stars-shield]: https://img.shields.io/github/stars/github_username/repo_name.svg?style=for-the-badge
+[stars-url]: https://github.com/github_username/repo_name/stargazers
+[issues-shield]: https://img.shields.io/github/issues/github_username/repo_name.svg?style=for-the-badge
+[issues-url]: https://github.com/github_username/repo_name/issues
+[license-shield]: https://img.shields.io/github/license/github_username/repo_name.svg?style=for-the-badge
+[license-url]: https://github.com/github_username/repo_name/blob/master/LICENSE.txt
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[linkedin-url]: https://linkedin.com/in/linkedin_username
+[product-screenshot]: images/screenshot.png
+[Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
+[Next-url]: https://nextjs.org/
+[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
+[React-url]: https://reactjs.org/
+[Vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D
+[Vue-url]: https://vuejs.org/
+[Angular.io]: https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white
+[Angular-url]: https://angular.io/
+[Svelte.dev]: https://img.shields.io/badge/Svelte-4A4A55?style=for-the-badge&logo=svelte&logoColor=FF3E00
+[Svelte-url]: https://svelte.dev/
+[Laravel.com]: https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white
+[Laravel-url]: https://laravel.com
+[Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
+[Bootstrap-url]: https://getbootstrap.com
+[JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
+[JQuery-url]: https://jquery.com 
