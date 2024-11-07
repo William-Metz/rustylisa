@@ -132,7 +132,7 @@ To get a local copy up and running follow these simple example steps.
 
 Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+_For more examples, please refer to the [Documentation](https://lisaresearch.sites.pomona.edu/)_
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -140,6 +140,13 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 <!-- ROADMAP -->
 ## Roadmap
+
+|Parameter       | Explantion      | Input Range       |
+|----------------|----------------|----------------|
+| Row 1, Col 1   | Row 1, Col 2   | Row 1, Col 3   |
+| Row 2, Col 1   | Row 2, Col 2   | Row 2, Col 3   |
+| Row 3, Col 1   | Row 3, Col 2   | Row 3, Col 3   |
+
 
 - [ ] Feature 1
 - [ ] Feature 2
