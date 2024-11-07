@@ -9,7 +9,7 @@
 #![allow(non_snake_case)]
 #![allow(clippy::module_inception)]
 
-use rustlisa::my_app::my_app::MyApp;
+use rustylisa::my_app::my_app::MyApp;
 fn main() {
     let native_options = eframe::NativeOptions::default();
 
