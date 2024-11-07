@@ -6,7 +6,7 @@ impl CaseSupervisor {
 
             if !self.wave.did_step_ok(n) {
                 println!("Coalescence");
-                println!("{}",self.case.R);
+                println!("{}", self.case.R);
                 println!("{}", self.case.r);
                 self.save_to_csv();
                 break;
