@@ -57,6 +57,7 @@ impl TestCase {
             delta_t,
             duration,
             // To Be Calculated
+            r: R,
             uncertainties: [0.0; 15],
             chi_10_x: None,
             chi_10_y: None,
@@ -80,11 +81,11 @@ impl TestCase {
         case.phi_1 *= radians_from_degrees;
         case.theta_2 *= radians_from_degrees;
         case.phi_2 *= radians_from_degrees;
-        case.R *= YEAR;
+        case.r *= YEAR;
 
         // Use imported constants G and GM_OMEGA_E
         case.GM = G * case.M; // G is the gravitational constant from the constants module
-        let z: f64 = case.R * HUBBLECONSTANT;
+        let z: f64 = case.r * HUBBLECONSTANT;
 
         // Calculate v0 using imported G constant
         let v0 = ((case.GM * 2.0 * PI * (1.0 + z)) / case.t_0).powf(1.0 / 3.0);

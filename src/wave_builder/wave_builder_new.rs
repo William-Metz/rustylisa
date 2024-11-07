@@ -10,7 +10,7 @@ impl WaveBuilder {
             beta_: c_info.beta_,
             delta: c_info.delta,
             delta_tau_r: c_info.delta_t / c_info.GM,
-            delta_tau: (c_info.delta_t / c_info.GM) / (1.0 + (c_info.R * HUBBLECONSTANT)),
+            delta_tau: (c_info.delta_t / c_info.GM) / (1.0 + (c_info.r * HUBBLECONSTANT)),
             spin_evolver: SpinEvolverClass::new(c_info),
             tau_r_dn: 0.0,
             eta: 0.25 * (1.0 - (c_info.delta * c_info.delta)),

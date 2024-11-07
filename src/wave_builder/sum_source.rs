@@ -126,7 +126,7 @@ impl WaveBuilder {
         let h0: f64 = 0.5
             * (1.0 - self.spin_evolver.test_case.delta * self.spin_evolver.test_case.delta)
             * self.spin_evolver.test_case.GM
-            / (self.spin_evolver.test_case.R);
+            / (self.spin_evolver.test_case.r);
         self.hp *= h0;
         self.hx *= h0;
     }

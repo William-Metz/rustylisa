@@ -31,6 +31,7 @@ pub struct TestCase {
     pub delta: f64,
     pub t_0: f64,
     pub R: f64,
+    pub r: f64,
     pub chi_10_x: Option<f64>,
     pub chi_10_y: Option<f64>,
     pub chi_10_z: Option<f64>,
