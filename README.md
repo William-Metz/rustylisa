@@ -174,10 +174,6 @@ _For more examples, please refer to the [Documentation](https://lisaresearch.sit
 | detectors     | detectors  | i32  | Number of detectors or observatories used in observing the system    | \( \geq 1 \)     | 1             |
 | delta_t       | Δt         | f64  | Time step size or resolution for simulation                          | \( Δt > 0 \)     | 0.1           |
 | duration      | duration   | f64  | Total duration of the waveform or simulation                         | \( \geq Δt \)    | 100.0         |
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
 
 See the [open issues](https://github.com/William-Metz/rustylisa/issues) for a full list of proposed features (and known issues).
 
@@ -233,8 +229,6 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 ## Acknowledgments
 
 * [Thomas Moore]()
-* []()
-* []()
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
