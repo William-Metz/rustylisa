@@ -35,7 +35,10 @@ pub struct MyApp {
 impl Default for MyApp {
     fn default() -> Self {
         Self {
-            test_cases: vec![TestCase::new()],
+            test_cases: vec![TestCase::new(
+                100000.0, 0.1, 500.0, 10000000.0, 39.0, 24.0, 0.0, 5.0, 268.5, 0.0, 0.0, 0.0, 0.0,
+                0.0, 0.0, 0.0, 0, 2, 50.0, 1.0,
+            )],
             simulation_data: Arc::new(Mutex::new(vec![None])),
             needs_simulation: vec![false],
             selected_tab: 0,
@@ -120,7 +123,10 @@ impl eframe::App for MyApp {
                     }
 
                     if ui.button("Add New Test Case").clicked() {
-                        self.test_cases.push(TestCase::new());
+                        self.test_cases.push(TestCase::new(
+                            100000.0, 0.1, 500.0, 10000000.0, 39.0, 24.0, 0.0, 5.0, 268.5, 0.0,
+                            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 2, 50.0, 1.0,
+                        ));
                         let mut data = self.simulation_data.lock().unwrap();
                         data.push(None);
                         self.needs_simulation.push(false);

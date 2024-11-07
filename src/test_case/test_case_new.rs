@@ -8,32 +8,54 @@
 // ------------------------------------------------------------
 use crate::constants::{G, HUBBLECONSTANT, YEAR};
 use crate::test_case::test_case::TestCase;
+use core::f64;
 use std::f64::consts::PI;
 
 impl TestCase {
-    pub fn new() -> Self {
+    pub fn new(
+        M: f64,
+        delta: f64,
+        t_0: f64,
+        R: f64,
+        beta_: f64,
+        psi: f64,
+        lambda0: f64,
+        theta_: f64,
+        phi_: f64,
+        chi1: f64,
+        theta_1: f64,
+        phi_1: f64,
+        chi2: f64,
+        theta_2: f64,
+        phi_2: f64,
+        rho_0: f64,
+        pn_order: i32,
+        detectors: i32,
+        delta_t: f64,
+        duration: f64,
+    ) -> Self {
         let mut case = Self {
             //inputs
-            M: 10000.0, // Mass of the system passed in as an argument
-            delta: 0.1,
-            t_0: 500.0,
-            R: 10000000.0,
-            beta_: 39.0,
-            psi: 24.0,
-            lambda0: 0.0,
-            theta_: 5.0,
-            phi_: 268.5,
-            chi1: 0.0,
-            theta_1: 0.0,
-            phi_1: 0.0,
-            chi2: 0.0,
-            theta_2: 0.0,
-            phi_2: 0.0,
-            rho_0: 0.0,
-            pn_order: 0,
-            detectors: 2,
-            delta_t: 50.0,
-            duration: 1.0,
+            M,
+            delta,
+            t_0,
+            R,
+            beta_,
+            psi,
+            lambda0,
+            theta_,
+            phi_,
+            chi1,
+            theta_1,
+            phi_1,
+            chi2,
+            theta_2,
+            phi_2,
+            rho_0,
+            pn_order,
+            detectors,
+            delta_t,
+            duration,
             // To Be Calculated
             uncertainties: [0.0; 15],
             chi_10_x: None,
