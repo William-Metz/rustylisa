@@ -118,7 +118,30 @@ RustyLISA is a project that aims to simulate gravitational waves, particularly t
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+## Examples
+
+Below are some example screenshots demonstrating the functionality of this project:
+
+### Simulation Results
+![Simulation Results](images/Simulation_Results.png)
+
+This image shows the results of a simulation run, displaying `HP` and `HX` graphs.
+
+### Change Results
+![Change Results](images/Change_Results.png)
+
+This screenshot shows how to change between different test cases when viewing their results.
+
+### Running All Tests
+![Run All](images/Run_All.png)
+
+Here, we see an example of hitting the `Run All Simulations` button to run all the test cases.
+
+### Individual Test Case
+![Test Case](images/Test_Case.png)
+
+This image provides a look at an individual test case.
+
 
 _For more examples, please refer to the [Documentation](https://lisaresearch.sites.pomona.edu/)_
 
@@ -128,27 +151,7 @@ _For more examples, please refer to the [Documentation](https://lisaresearch.sit
 
 <!-- ROADMAP -->
 ## Roadmap
-        M: f64,
-        delta: f64,
-        t_0: f64,
-        R: f64,
-        beta_: f64,
-        psi: f64,
-        lambda0: f64,
-        theta_: f64,
-        phi_: f64,
-        chi1: f64,
-        theta_1: f64,
-        phi_1: f64,
-        chi2: f64,
-        theta_2: f64,
-        phi_2: f64,
-        rho_0: f64,
-        pn_order: i32,
-        detectors: i32,
-        delta_t: f64,
-        duration: f64,
-
+ 
 | Variable Name | Symbol     | Type | Description                                                          | Input Range       | Default Value |
 |---------------|------------|------|----------------------------------------------------------------------|-------------------|---------------|
 | M             | M          | f64  | Total mass of the binary system in units of solar masses             | M > 1            | 100000         |
