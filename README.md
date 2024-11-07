@@ -30,22 +30,22 @@
 <br />
 <div align="center">
   <a href="[[ttps://github.com/github_username/repo_name](https://github.com/William-Metz/rustylisa)](https://github.com/William-Metz/rustylisa.git)">
-    <img src="images/LISA_Logo.jpg" alt="Logo" width="80" height="80">
+    <img src="images/LISA_Logo.jpg" alt="Logo" width="240" height="240">
   </a>
 
 <h3 align="center">Rusty LISA</h3>
 
   <p align="center">
-    project_description
+    A gravitational waveform generator built in Rust
     <br />
-    <a href="https://github.com/github_username/repo_name"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/William-Metz/rustylisa"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/github_username/repo_name">View Demo</a>
+    <a href="https://github.com/William-Metz/rustylisa">View Demo</a>
     ·
-    <a href="https://github.com/github_username/repo_name/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    <a href="https://github.com/William-Metz/rustylisa/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
-    <a href="https://github.com/github_username/repo_name/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <a href="https://github.com/William-Metz/rustylisa/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
 
@@ -81,10 +81,8 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-RustyLISA is a Rust library designed to simulate gravitational wave signals, particularly those detected by the Laser Interferometer Space Antenna (LISA). Built for performance and extensibility, RustyLISA leverages the power of Rust to run efficient, parallelized simulations. This tool is useful for researchers, engineers, and enthusiasts interested in gravitational wave astrophysics.
-
+RustyLISA is a project that aims to simulate gravitational waves, particularly those detected by the Laser Interferometer Space Antenna (LISA). This project is the continuation of a long-running Physics Research at Pomona College, headed by Thomas Moore, which initially built a simulator with a team of undergraduate researchers using XOJO. The main goal of the RustyLISA project is to leverage Rust's performance and reliability to create a faster and more feature-rich GW simulator to empower researchers with the tools to do cutting-edge research.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 ### Built With
@@ -96,9 +94,6 @@ Rust
 
 <!-- GETTING STARTED -->
 ## Getting Started
-
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
@@ -188,7 +183,7 @@ _For more examples, please refer to the [Documentation](https://lisaresearch.sit
 - [ ] Feature 3
     - [ ] Nested Feature
 
-See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/William-Metz/rustylisa/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -241,7 +236,7 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* []()
+* [Thomas Moore]()
 * []()
 * []()
 
