@@ -30,7 +30,7 @@
 <br />
 <div align="center">
   <a href="[[ttps://github.com/github_username/repo_name](https://github.com/William-Metz/rustylisa)](https://github.com/William-Metz/rustylisa.git)">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="images/LISA_Logo.jpg" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">Rusty LISA</h3>
