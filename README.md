@@ -85,13 +85,6 @@ RustyLISA is a project that aims to simulate gravitational waves, particularly t
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-### Built With
-Rust
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
 <!-- GETTING STARTED -->
 ## Getting Started
 
