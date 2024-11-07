@@ -140,14 +140,49 @@ _For more examples, please refer to the [Documentation](https://lisaresearch.sit
 
 <!-- ROADMAP -->
 ## Roadmap
+        M: f64,
+        delta: f64,
+        t_0: f64,
+        R: f64,
+        beta_: f64,
+        psi: f64,
+        lambda0: f64,
+        theta_: f64,
+        phi_: f64,
+        chi1: f64,
+        theta_1: f64,
+        phi_1: f64,
+        chi2: f64,
+        theta_2: f64,
+        phi_2: f64,
+        rho_0: f64,
+        pn_order: i32,
+        detectors: i32,
+        delta_t: f64,
+        duration: f64,
 
-|Parameter       | Explantion      | Input Range       |
-|----------------|----------------|----------------|
-| Row 1, Col 1   | Row 1, Col 2   | Row 1, Col 3   |
-| Row 2, Col 1   | Row 2, Col 2   | Row 2, Col 3   |
-| Row 3, Col 1   | Row 3, Col 2   | Row 3, Col 3   |
-
-
+| Variable Name | Symbol     | Type | Description                                                          | Input Range       | Default Value |
+|---------------|------------|------|----------------------------------------------------------------------|-------------------|---------------|
+| M             | M          | f64  | Total mass of the binary system in units of solar masses             | M > 1            | 100000         |
+| delta         | δ          | f64  | Asymmetry in mass ratio, calculated as \( \frac{m_1 - m_2}{M} \)     | -1.0 < δ < 1.0   | 0.1           |
+| t_0           | t₀         | f64  | Initial period of the binary system in Light years                   | 10 to 10,000 ly   | 100.0      |
+| R             | R          | f64  | Distance to the binary system from the detectors                     | \( R > 0 \)      | 10000000.0        |
+| beta_         | β          | f64  | Inclination angle between the orbital angular momentum and line of sight | 0° to 180°   | 39.0°         |
+| psi           | ψ          | f64  | Precession phase angle, describing the orbital plane's orientation   | 0° to 360°       | 24.0°          |
+| lambda0       | λ₀         | f64  | Initial orbital phase or mean longitude                              | 0° to 360°       | 0.0°          |
+| theta_        | θ          | f64  | Polar angle for binary orientation relative to a reference axis      | 0° to 180°       | 5.0°         |
+| phi_          | ϕ          | f64  | Azimuthal angle for binary orientation in the reference plane        | 0° to 360°       | 268.5°          |
+| chi1          | χ₁         | f64  | Dimensionless spin parameter of the first object                     | 0 to 1           | 0.0          |
+| theta_1       | θ₁         | f64  | Polar angle of the first object's spin vector                        | 0° to 180°       | 90.0°         |
+| phi_1         | ϕ₁         | f64  | Azimuthal angle of the first object's spin vector                    | 0° to 360°       | 0.0°          |
+| chi2          | χ₂         | f64  | Dimensionless spin parameter of the second object                    | 0 to 1           | 0.5           |
+| theta_2       | θ₂         | f64  | Polar angle of the second object's spin vector                       | 0° to 180°       | 90.0°         |
+| phi_2         | ϕ₂         | f64  | Azimuthal angle of the second object's spin vector                   | 0° to 360°       | 0.0°          |
+| rho_0         | ρ₀         | f64  | Initial separation distance or radial parameter for orbit            | \( ρ₀ > 0 \)     | 1.0           |
+| pn_order      | Post Newtonian Order | i32  | Order of the Post-Newtonian expansion used in the model      0 to 3          | 0             |
+| detectors     | detectors  | i32  | Number of detectors or observatories used in observing the system    | \( \geq 1 \)     | 1             |
+| delta_t       | Δt         | f64  | Time step size or resolution for simulation                          | \( Δt > 0 \)     | 0.1           |
+| duration      | duration   | f64  | Total duration of the waveform or simulation                         | \( \geq Δt \)    | 100.0         |
 - [ ] Feature 1
 - [ ] Feature 2
 - [ ] Feature 3
@@ -195,7 +230,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
+Will Metz - williamesmetz@gmail.com
 
 Project Link: [https://github.com/github_username/repo_name](https://github.com/github_username/repo_name)
 
