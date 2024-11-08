@@ -5,9 +5,7 @@ impl CaseSupervisor {
             self.delta_tau = (n as f64) * self.wave.delta_tau_r; //update
 
             if !self.wave.did_step_ok(n) {
-                println!("Coalescence");
-                println!("{}", self.case.R);
-                println!("{}", self.case.r);
+                //                println!("Coalescence");
                 self.save_to_csv();
                 break;
             }

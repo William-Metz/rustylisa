@@ -2,11 +2,16 @@ use crate::case_supervisor::case_supervisor::CaseSupervisor;
 use crate::data_point::DataPoint;
 use crate::test_case::test_case::TestCase;
 
+use csv::{ReaderBuilder, Trim};
 use eframe::egui;
 use egui_plot::{Legend, Line, Plot, PlotPoints};
+use rfd::FileDialog;
+use std::fs::File;
 use tokio;
 
+use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
+use std::time::Instant;
 use tokio::runtime::Runtime;
 macro_rules! ui_label_drag {
     ($ui:ident, $struct:expr, $( $label:literal => $field:ident ),* $(,)?) => {
@@ -23,6 +28,7 @@ enum View {
     Results,
 }
 
+#[derive(Clone)]
 pub struct MyApp {
     test_cases: Vec<TestCase>,
     simulation_data: Arc<Mutex<Vec<Option<Vec<DataPoint>>>>>, // Shared simulation data
@@ -30,6 +36,9 @@ pub struct MyApp {
     selected_tab: usize,
     current_view: View,
     runtime: Arc<Runtime>, // Shared runtime
+    simulations_running: Arc<AtomicUsize>,
+    simulations_start_time: Option<Instant>,
+    total_simulation_duration: Arc<Mutex<Option<std::time::Duration>>>,
 }
 
 impl Default for MyApp {
@@ -44,19 +53,9 @@ impl Default for MyApp {
             selected_tab: 0,
             current_view: View::Input,
             runtime: Arc::new(Runtime::new().expect("Failed to create Tokio runtime")),
-        }
-    }
-}
-
-impl Clone for MyApp {
-    fn clone(&self) -> Self {
-        Self {
-            test_cases: self.test_cases.clone(),
-            simulation_data: Arc::clone(&self.simulation_data), // Share simulation data
-            needs_simulation: self.needs_simulation.clone(),
-            selected_tab: self.selected_tab,
-            current_view: self.current_view.clone(),
-            runtime: Arc::clone(&self.runtime),
+            simulations_running: Arc::new(AtomicUsize::new(0)),
+            simulations_start_time: None,
+            total_simulation_duration: Arc::new(Mutex::new(None)),
         }
     }
 }
@@ -113,7 +112,7 @@ impl eframe::App for MyApp {
                                         "detectors:" => detectors,
                                         "delta_t:" => delta_t,
                                         "duration:" => duration,
-                                    );
+                                        );
                                 });
 
                             if ui.button("Run Simulation").clicked() {
@@ -124,13 +123,112 @@ impl eframe::App for MyApp {
 
                     if ui.button("Add New Test Case").clicked() {
                         self.test_cases.push(TestCase::new(
-                            100000.0, 0.1, 500.0, 10000000.0, 39.0, 24.0, 0.0, 5.0, 268.5, 0.0,
-                            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 2, 50.0, 1.0,
+                                100000.0, 0.1, 500.0, 10000000.0, 39.0, 24.0, 0.0, 5.0, 268.5, 0.0,
+                                0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 2, 50.0, 1.0,
                         ));
                         let mut data = self.simulation_data.lock().unwrap();
                         data.push(None);
                         self.needs_simulation.push(false);
                     }
+                    if ui.button("Import Test Cases from CSV").clicked() {
+                        if let Some(path) = FileDialog::new().add_filter("CSV", &["csv"]).pick_file() {
+                            if let Ok(file) = File::open(&path) {
+                                let mut reader = ReaderBuilder::new()
+                                    .has_headers(false)
+                                    .trim(Trim::All) // Trim whitespace from all fields
+                                    .from_reader(file);
+
+                                for (line_num, result) in reader.records().enumerate() {
+                                    match result {
+                                        Ok(record) => {
+                                            if record.len() != 20 {
+                                                eprintln!(
+                                                    "Invalid number of fields in line {}: expected 20, got {}",
+                                                    line_num + 1,
+                                                    record.len()
+                                                );
+                                                continue;
+                                            }
+
+                                            // Parse fields into appropriate types
+                                            let parse_field = |s: &str| -> Result<f64, _> { s.parse::<f64>() };
+                                            let parse_field_i32 = |s: &str| -> Result<i32, _> { s.parse::<i32>() };
+
+                                            match (
+                                                parse_field(&record[0]),
+                                                parse_field(&record[1]),
+                                                parse_field(&record[2]),
+                                                parse_field(&record[3]),
+                                                parse_field(&record[4]),
+                                                parse_field(&record[5]),
+                                                parse_field(&record[6]),
+                                                parse_field(&record[7]),
+                                                parse_field(&record[8]),
+                                                parse_field(&record[9]),
+                                                parse_field(&record[10]),
+                                                parse_field(&record[11]),
+                                                parse_field(&record[12]),
+                                                parse_field(&record[13]),
+                                                parse_field(&record[14]),
+                                                parse_field(&record[15]),
+                                                parse_field_i32(&record[16]),
+                                                parse_field_i32(&record[17]),
+                                                parse_field(&record[18]),
+                                                parse_field(&record[19]),
+                                                ) {
+                                                    (
+                                                        Ok(M),
+                                                        Ok(delta),
+                                                        Ok(t_0),
+                                                        Ok(R),
+                                                        Ok(beta_),
+                                                        Ok(psi),
+                                                        Ok(lambda0),
+                                                        Ok(theta_),
+                                                        Ok(phi_),
+                                                        Ok(chi1),
+                                                        Ok(theta_1),
+                                                        Ok(phi_1),
+                                                        Ok(chi2),
+                                                        Ok(theta_2),
+                                                        Ok(phi_2),
+                                                        Ok(rho_0),
+                                                        Ok(pn_order),
+                                                        Ok(detectors),
+                                                        Ok(delta_t),
+                                                        Ok(duration),
+                                                        ) => {
+                                                            let test_case = TestCase::new(
+                                                                M, delta, t_0, R, beta_, psi, lambda0, theta_, phi_, chi1,
+                                                                theta_1, phi_1, chi2, theta_2, phi_2, rho_0, pn_order,
+                                                                detectors, delta_t, duration,
+                                                            );
+
+                                                            self.test_cases.push(test_case);
+                                                            let mut data = self.simulation_data.lock().unwrap();
+                                                            data.push(None);
+                                                            self.needs_simulation.push(false);
+                                                        }
+                                                    _ => {
+                                                        eprintln!(
+                                                            "Failed to parse line {}: {}",
+                                                            line_num + 1,
+                                                            record.iter().collect::<Vec<_>>().join(",")
+                                                        );
+                                                    }
+                                            }
+                                        }
+                                        Err(e) => {
+                                            eprintln!("Error reading CSV record at line {}: {}", line_num + 1, e);
+                                        }
+                                    }
+                                }
+                            } else {
+                                eprintln!("Failed to open file: {:?}", path);
+                            }
+                        }
+                    }
+
                 });
             }
             View::Results => {
@@ -182,20 +280,58 @@ impl eframe::App for MyApp {
             }
         }
 
-        for i in simulations_to_run {
-            let testcase = self.test_cases[i].clone();
-            let simulation_data = Arc::clone(&self.simulation_data);
-            let runtime = Arc::clone(&self.runtime);
-            runtime.spawn(async move {
-                let mut case_supervisor = CaseSupervisor::new(testcase);
+        //     let testcase = self.test_cases[i].clone();
 
-                // Run the simulation
-                case_supervisor.run_simulation();
+        if !simulations_to_run.is_empty() {
+            println!("Start");
 
-                // Store the simulation data
-                let mut data = simulation_data.lock().expect("Failed to lock mutex");
-                data[i] = Some(case_supervisor.wave.spin_evolver.data.clone());
+            // Record the start time
+            let simulations_start_time = Instant::now();
+            self.simulations_start_time = Some(simulations_start_time);
+
+            // Set the counter
+            self.simulations_running
+                .fetch_add(simulations_to_run.len(), Ordering::SeqCst);
+
+            for i in simulations_to_run {
+                let testcase = self.test_cases[i].clone();
+                let simulation_data = Arc::clone(&self.simulation_data);
+                let simulations_running = Arc::clone(&self.simulations_running);
+                let total_simulation_duration = Arc::clone(&self.total_simulation_duration);
+                let runtime = Arc::clone(&self.runtime);
+
+                let simulations_start_time = simulations_start_time;
+
+                runtime.spawn(async move {
+                    let mut case_supervisor = CaseSupervisor::new(testcase);
+
+                    // Run the simulation
+                    case_supervisor.run_simulation();
+
+                    // Store the simulation data
+                    let mut data = simulation_data.lock().expect("Failed to lock mutex");
+                    data[i] = Some(case_supervisor.wave.spin_evolver.data.clone());
+
+                    // Decrement the counter
+                    let remaining = simulations_running.fetch_sub(1, Ordering::SeqCst) - 1;
+
+                    // If this was the last simulation
+                    if remaining == 0 {
+                        let total_duration = simulations_start_time.elapsed();
+                        *total_simulation_duration.lock().unwrap() = Some(total_duration);
+                        println!("Finish");
+                        println!("Total time: {:?}", total_duration);
+                    }
+                });
+            }
+        }
+
+        if let Some(duration) = *self.total_simulation_duration.lock().unwrap() {
+            egui::TopBottomPanel::bottom("bottom_panel").show(ctx, |ui| {
+                ui.label(format!("All simulations completed in {:.2?}", duration));
             });
         }
+
+        ctx.request_repaint();
     }
 }
