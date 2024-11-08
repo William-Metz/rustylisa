@@ -300,8 +300,6 @@ impl eframe::App for MyApp {
                 let total_simulation_duration = Arc::clone(&self.total_simulation_duration);
                 let runtime = Arc::clone(&self.runtime);
 
-                let simulations_start_time = simulations_start_time;
-
                 runtime.spawn(async move {
                     let mut case_supervisor = CaseSupervisor::new(testcase);
 
