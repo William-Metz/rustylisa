@@ -1,18 +1,12 @@
-use crate::case_supervisor::case_supervisor::CaseSupervisor;
-use crate::data_point::DataPoint;
 use crate::test_case::test_case::TestCase;
-
+use crate::wave_generator_app::view::View;
+use crate::wave_generator_app::wave_generator_app::WaveGeneratorApp;
 use csv::{ReaderBuilder, Trim};
 use eframe::egui;
 use egui_plot::{Legend, Line, Plot, PlotPoints};
 use rfd::FileDialog;
 use std::fs::File;
-use tokio;
 
-use std::sync::atomic::{AtomicUsize, Ordering};
-use std::sync::{Arc, Mutex};
-use std::time::Instant;
-use tokio::runtime::Runtime;
 macro_rules! ui_label_drag {
     ($ui:ident, $struct:expr, $( $label:literal => $field:ident ),* $(,)?) => {
         $(
@@ -22,45 +16,8 @@ macro_rules! ui_label_drag {
         )*
     };
 }
-#[derive(Clone)]
-enum View {
-    Input,
-    Results,
-}
 
-#[derive(Clone)]
-pub struct MyApp {
-    test_cases: Vec<TestCase>,
-    simulation_data: Arc<Mutex<Vec<Option<Vec<DataPoint>>>>>, // Shared simulation data
-    needs_simulation: Vec<bool>,
-    selected_tab: usize,
-    current_view: View,
-    runtime: Arc<Runtime>, // Shared runtime
-    simulations_running: Arc<AtomicUsize>,
-    simulations_start_time: Option<Instant>,
-    total_simulation_duration: Arc<Mutex<Option<std::time::Duration>>>,
-}
-
-impl Default for MyApp {
-    fn default() -> Self {
-        Self {
-            test_cases: vec![TestCase::new(
-                100000.0, 0.1, 500.0, 10000000.0, 39.0, 24.0, 0.0, 5.0, 268.5, 0.0, 0.0, 0.0, 0.0,
-                0.0, 0.0, 0.0, 0, 2, 50.0, 1.0,
-            )],
-            simulation_data: Arc::new(Mutex::new(vec![None])),
-            needs_simulation: vec![false],
-            selected_tab: 0,
-            current_view: View::Input,
-            runtime: Arc::new(Runtime::new().expect("Failed to create Tokio runtime")),
-            simulations_running: Arc::new(AtomicUsize::new(0)),
-            simulations_start_time: None,
-            total_simulation_duration: Arc::new(Mutex::new(None)),
-        }
-    }
-}
-
-impl eframe::App for MyApp {
+impl eframe::App for WaveGeneratorApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         let mut simulations_to_run = vec![];
 
@@ -74,7 +31,7 @@ impl eframe::App for MyApp {
                     self.current_view = View::Results;
                 }
                 if ui.button("Run All Simulations").clicked() {
-                    simulations_to_run.extend(0..self.test_cases.len()); // Queue all simulations
+                    self.runner.run_all_simulations(); // Call to run all simulations
                 }
             });
         });
@@ -85,7 +42,7 @@ impl eframe::App for MyApp {
                 egui::CentralPanel::default().show(ctx, |ui| {
                     ui.heading("Input Parameters");
 
-                    for (i, test_case) in self.test_cases.iter_mut().enumerate() {
+                    for (i, test_case) in self.runner.test_cases.iter_mut().enumerate() {
                         ui.collapsing(format!("Test Case {}", i + 1), |ui| {
                             egui::Grid::new(format!("param_grid_{}", i))
                                 .num_columns(2)
@@ -122,13 +79,12 @@ impl eframe::App for MyApp {
                     }
 
                     if ui.button("Add New Test Case").clicked() {
-                        self.test_cases.push(TestCase::new(
+                        self.runner.test_cases.push(TestCase::new(
                                 100000.0, 0.1, 500.0, 10000000.0, 39.0, 24.0, 0.0, 5.0, 268.5, 0.0,
                                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 2, 50.0, 1.0,
                         ));
-                        let mut data = self.simulation_data.lock().unwrap();
+                        let mut data = self.runner.simulation_data.lock().unwrap();
                         data.push(None);
-                        self.needs_simulation.push(false);
                     }
                     if ui.button("Import Test Cases from CSV").clicked() {
                         if let Some(path) = FileDialog::new().add_filter("CSV", &["csv"]).pick_file() {
@@ -204,10 +160,9 @@ impl eframe::App for MyApp {
                                                                 detectors, delta_t, duration,
                                                             );
 
-                                                            self.test_cases.push(test_case);
-                                                            let mut data = self.simulation_data.lock().unwrap();
+                                                            self.runner.test_cases.push(test_case);
+                                                            let mut data = self.runner.simulation_data.lock().unwrap();
                                                             data.push(None);
-                                                            self.needs_simulation.push(false);
                                                         }
                                                     _ => {
                                                         eprintln!(
@@ -240,7 +195,7 @@ impl eframe::App for MyApp {
                     egui::ComboBox::from_label("Test Case")
                         .selected_text(format!("Test Case {}", self.selected_tab + 1))
                         .show_ui(ui, |ui| {
-                            for i in 0..self.test_cases.len() {
+                            for i in 0..self.runner.test_cases.len() {
                                 ui.selectable_value(
                                     &mut self.selected_tab,
                                     i,
@@ -252,7 +207,7 @@ impl eframe::App for MyApp {
                     ui.separator();
 
                     // Access simulation data safely using the mutex
-                    let data = self.simulation_data.lock().unwrap();
+                    let data = self.runner.simulation_data.lock().unwrap();
                     ui.heading(format!(
                         "Gravitational Wave Plot for Test Case {}",
                         self.selected_tab + 1
@@ -280,51 +235,7 @@ impl eframe::App for MyApp {
             }
         }
 
-        //     let testcase = self.test_cases[i].clone();
-
-        if !simulations_to_run.is_empty() {
-            println!("Start");
-
-            // Record the start time
-            let simulations_start_time = Instant::now();
-            self.simulations_start_time = Some(simulations_start_time);
-
-            // Set the counter
-            self.simulations_running
-                .fetch_add(simulations_to_run.len(), Ordering::SeqCst);
-
-            for i in simulations_to_run {
-                let testcase = self.test_cases[i].clone();
-                let simulation_data = Arc::clone(&self.simulation_data);
-                let simulations_running = Arc::clone(&self.simulations_running);
-                let total_simulation_duration = Arc::clone(&self.total_simulation_duration);
-                let runtime = Arc::clone(&self.runtime);
-
-                runtime.spawn(async move {
-                    let mut case_supervisor = CaseSupervisor::new(testcase);
-
-                    // Run the simulation
-                    case_supervisor.run_simulation();
-
-                    // Store the simulation data
-                    let mut data = simulation_data.lock().expect("Failed to lock mutex");
-                    data[i] = Some(case_supervisor.wave.spin_evolver.data.clone());
-
-                    // Decrement the counter
-                    let remaining = simulations_running.fetch_sub(1, Ordering::SeqCst) - 1;
-
-                    // If this was the last simulation
-                    if remaining == 0 {
-                        let total_duration = simulations_start_time.elapsed();
-                        *total_simulation_duration.lock().unwrap() = Some(total_duration);
-                        println!("Finish");
-                        println!("Total time: {:?}", total_duration);
-                    }
-                });
-            }
-        }
-
-        if let Some(duration) = *self.total_simulation_duration.lock().unwrap() {
+        if let Some(duration) = *self.runner.total_simulation_duration.lock().unwrap() {
             egui::TopBottomPanel::bottom("bottom_panel").show(ctx, |ui| {
                 ui.label(format!("All simulations completed in {:.2?}", duration));
             });

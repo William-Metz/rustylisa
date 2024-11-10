@@ -9,14 +9,14 @@
 #![allow(non_snake_case)]
 #![allow(clippy::module_inception)]
 
-use rustylisa::my_app::my_app::MyApp;
+use rustylisa::wave_generator_app::wave_generator_app::WaveGeneratorApp;
 fn main() {
     let native_options = eframe::NativeOptions::default();
 
     eframe::run_native(
         "Gravitational Wave Visualizer",
         native_options,
-        Box::new(|_cc| Box::new(MyApp::default())),
+        Box::new(|_cc| Box::new(WaveGeneratorApp::default())),
     )
     .expect("Failed to start eframe application");
 }
