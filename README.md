@@ -170,10 +170,10 @@ _For more examples, please refer to the [Documentation](https://lisaresearch.sit
 | theta_2       | θ₂         | f64  | Polar angle of the second object's spin vector                       | 0° to 180°       | 90.0°         |
 | phi_2         | ϕ₂         | f64  | Azimuthal angle of the second object's spin vector                   | 0° to 360°       | 0.0°          |
 | rho_0         | ρ₀         | f64  | Initial separation distance or radial parameter for orbit            | \( ρ₀ > 0 \)     | 1.0           |
-| pn_order      | Post Newtonian Order | i32  | Order of the Post-Newtonian expansion used in the model      0 to 3          | 0             |
-| detectors     | detectors  | i32  | Number of detectors or observatories used in observing the system    | \( \geq 1 \)     | 1             |
+| pn_order      | Post Newtonian Order | i32  | Order of the Post-Newtonian expansion used in the model     | 0 to 3          | 0             |
+| detectors     | detectors  | i32  | Number of detectors or observatories used in observing the system    | \(  detectors $\geq$ 1 \)     | 1             |
 | delta_t       | Δt         | f64  | Time step size or resolution for simulation                          | \( Δt > 0 \)     | 0.1           |
-| duration      | duration   | f64  | Total duration of the waveform or simulation                         | \( \geq Δt \)    | 100.0         |
+| duration      | duration   | f64  | Total duration of the waveform or simulation                         | \(  duration $\geq$ Δt \)    | 100.0         |
 
 See the [open issues](https://github.com/William-Metz/rustylisa/issues) for a full list of proposed features (and known issues).
 
