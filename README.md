@@ -155,7 +155,7 @@ _For more examples, please refer to the [Documentation](https://lisaresearch.sit
 | Variable Name | Symbol     | Type | Description                                                          | Input Range       | Default Value |
 |---------------|------------|------|----------------------------------------------------------------------|-------------------|---------------|
 | M             | M          | f64  | Total mass of the binary system in units of solar masses             | M > 1            | 100000         |
-| delta         | δ          | f64  | Asymmetry in mass ratio, calculated as \( \frac{m_1 - m_2}{M} \)     | -1.0 < δ < 1.0   | 0.1           |
+| delta         | δ          | f64  | Asymmetry in mass ratio, calculated as \( $\frac{m_1 - m_2}{M}$ \)     | -1.0 < δ < 1.0   | 0.1           |
 | t_0           | t₀         | f64  | Initial period of the binary system in Light years                   | 10 to 10,000 ly   | 100.0      |
 | R             | R          | f64  | Distance to the binary system from the detectors                     | \( R > 0 \)      | 10000000.0        |
 | beta_         | β          | f64  | Inclination angle between the orbital angular momentum and line of sight | 0° to 180°   | 39.0°         |
