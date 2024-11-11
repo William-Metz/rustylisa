@@ -156,10 +156,10 @@ _For more examples, please refer to the [Documentation](https://lisaresearch.sit
 |---------------|------------|------|----------------------------------------------------------------------|-------------------|---------------|
 | M             | M          | f64  | Total mass of the binary system in units of solar masses             | M > 1            | 100000         |
 | delta         | δ          | f64  | Asymmetry in mass ratio, calculated as \( $\frac{m_1 - m_2}{M}$ \)     | -1.0 < δ < 1.0   | 0.1           |
-| t_0           | t₀         | f64  | Initial period of the binary system in Light years                   | 10 to 10,000 ly   | 100.0      |
-| R             | R          | f64  | Distance to the binary system from the detectors                     | \( R > 0 \)      | 10000000.0        |
+| t_0           | t₀         | f64  | Initial period of the binary system in seconds 10/100,000                 | 10 to 10,000 ly   | 100.0      |
+| R             | R          | f64  | Distance to the binary system from the detectors in light years             | \( 13,700,000>R > 1000 \)      | 10000000.0        |
 | beta_         | β          | f64  | Inclination angle between the orbital angular momentum and line of sight | 0° to 180°   | 39.0°         |
-| psi           | ψ          | f64  | Precession phase angle, describing the orbital plane's orientation   | 0° to 360°       | 24.0°          |
+| psi           | ψ          | f64  | Change    | 0° to 360°       | 24.0°          |
 | lambda0       | λ₀         | f64  | Initial orbital phase or mean longitude                              | 0° to 360°       | 0.0°          |
 | theta_        | θ          | f64  | Polar angle for binary orientation relative to a reference axis      | 0° to 180°       | 5.0°         |
 | phi_          | ϕ          | f64  | Azimuthal angle for binary orientation in the reference plane        | 0° to 360°       | 268.5°          |
@@ -169,11 +169,11 @@ _For more examples, please refer to the [Documentation](https://lisaresearch.sit
 | chi2          | χ₂         | f64  | Dimensionless spin parameter of the second object                    | 0 to 1           | 0.5           |
 | theta_2       | θ₂         | f64  | Polar angle of the second object's spin vector                       | 0° to 180°       | 90.0°         |
 | phi_2         | ϕ₂         | f64  | Azimuthal angle of the second object's spin vector                   | 0° to 360°       | 0.0°          |
-| rho_0         | ρ₀         | f64  | Initial separation distance or radial parameter for orbit            | \( ρ₀ > 0 \)     | 1.0           |
+| rho_0         | ρ₀         | f64  | Phase for the LISA orbit            |  0° to 360°    | 0°        |
 | pn_order      | Post Newtonian Order | i32  | Order of the Post-Newtonian expansion used in the model     | 0 to 3          | 0             |
 | detectors     | detectors  | i32  | Number of detectors or observatories used in observing the system    | \(  detectors $\geq$ 1 \)     | 1             |
 | delta_t       | Δt         | f64  | Time step size or resolution for simulation                          | \( Δt > 0 \)     | 0.1           |
-| duration      | duration   | f64  | Total duration of the waveform or simulation                         | \(  duration $\geq$ Δt \)    | 100.0         |
+| duration      | duration   | f64  | Total duration of the waveform or simulation in years                        | \(  duration $\geq$ Δt \)    | 1.0         |
 
 See the [open issues](https://github.com/William-Metz/rustylisa/issues) for a full list of proposed features (and known issues).
 
