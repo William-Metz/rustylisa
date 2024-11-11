@@ -9,6 +9,7 @@
 pub mod case_supervisor;
 pub mod constants;
 pub mod data_point;
+pub mod gen_tests;
 pub mod simulation_runner;
 pub mod spin_data;
 pub mod spin_evolver;

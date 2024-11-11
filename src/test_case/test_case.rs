@@ -7,8 +7,8 @@
 // No warranty is provided, and this is not an official product.
 // ------------------------------------------------------------
 use core::f64;
-
-#[derive(PartialEq, Clone, Debug)]
+use serde::{Deserialize, Serialize};
+#[derive(PartialEq, Clone, Debug, Deserialize, Serialize)]
 pub struct TestCase {
     // Fields from Case_Info
     pub uncertainties: [f64; 15],

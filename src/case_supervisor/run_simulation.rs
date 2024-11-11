@@ -6,7 +6,7 @@ impl CaseSupervisor {
 
             if !self.wave.did_step_ok(n) {
                 //                println!("Coalescence");
-                self.save_to_csv();
+                //self.save_to_csv();
                 break;
             }
         }

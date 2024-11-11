@@ -31,7 +31,7 @@ impl eframe::App for WaveGeneratorApp {
                     self.current_view = View::Results;
                 }
                 if ui.button("Run All Simulations").clicked() {
-                    self.runner.run_all_simulations(); // Call to run all simulations
+                    self.runner.run_all_simulations(false); // Call to run all simulations
                 }
             });
         });
