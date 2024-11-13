@@ -159,7 +159,7 @@ _For more examples, please refer to the [Documentation](https://lisaresearch.sit
 | t_0           | t₀         | f64  | Initial period of the binary system in seconds 10/100,000                 | 10 to 10,000 ly   | 100.0      |
 | R             | R          | f64  | Distance to the binary system from the detectors in light years             | \( 13,700,000>R > 1000 \)      | 10000000.0        |
 | beta_         | β          | f64  | Inclination angle between the orbital angular momentum and line of sight | 0° to 180°   | 39.0°         |
-| psi           | ψ          | f64  | Change    | 0° to 360°       | 24.0°          |
+| psi           | ψ          | f64  |  Orientation of the elliptical orbit relative to the reference frame    | 0° to 360°       | 24.0°          |
 | lambda0       | λ₀         | f64  | Initial orbital phase or mean longitude                              | 0° to 360°       | 0.0°          |
 | theta_        | θ          | f64  | Polar angle for binary orientation relative to a reference axis      | 0° to 180°       | 5.0°         |
 | phi_          | ϕ          | f64  | Azimuthal angle for binary orientation in the reference plane        | 0° to 360°       | 268.5°          |
