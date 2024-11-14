@@ -66,7 +66,7 @@ impl SimulationRunner {
         self.runtime.spawn(async move {
             // Wait until all simulations are complete
             while simulations_running.load(Ordering::SeqCst) > 0 {
-                tokio::time::sleep(std::time::Duration::from_millis(100)).await;
+                tokio::time::sleep(std::time::Duration::from_millis(10)).await;
             }
 
             // Calculate and store the total duration once all are complete

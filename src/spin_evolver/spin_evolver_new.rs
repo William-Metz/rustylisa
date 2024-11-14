@@ -1,6 +1,3 @@
-// This project is open for educational and personal use only.
-// No warranty is provided, and this is not an official product.
-// ------------------------------------------------------------
 use crate::spin_evolver::spin_evolver::SpinEvolverClass;
 use crate::test_case::test_case::TestCase;
 use crate::vcalculator::vcalculator::VCalculator;

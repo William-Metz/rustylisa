@@ -1,6 +1,3 @@
-// This project is open for educational and personal use only.
-// No warranty is provided, and this is not an official product.
-// ------------------------------------------------------------
 use crate::constants::YEAR;
 use crate::data_point::DataPoint;
 use crate::wave_builder::wave_builder::WaveBuilder;

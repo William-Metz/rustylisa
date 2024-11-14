@@ -1,6 +1,3 @@
-// This project is open for educational and personal use only.
-// No warranty is provided, and this is not an official product.
-// ------------------------------------------------------------
 use core::f64;
 use serde::{Deserialize, Serialize};
 #[derive(PartialEq, Clone, Debug, Deserialize, Serialize)]

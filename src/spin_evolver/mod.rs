@@ -1,6 +1,3 @@
-// This project is open for educational and personal use only.
-// No warranty is provided, and this is not an official product.
-// ------------------------------------------------------------
 //src/spin_evolver/mod.rs
 pub mod adjust_past;
 pub mod do_step_succeeded;

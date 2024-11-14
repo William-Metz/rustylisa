@@ -59,7 +59,7 @@ pub fn generate_test_cases(num_cases: usize) -> Vec<TestCase> {
         let rho_0 = 0.0; //get back to
         let detectors = 1; //get back to
         let delta_t = 50.0;
-        let duration = 1.0;
+        let duration = 10.0;
 
         // Create TestCase
         let test_case = TestCase::new(
@@ -87,6 +87,5 @@ pub fn generate_test_cases(num_cases: usize) -> Vec<TestCase> {
 
         test_cases.push(test_case);
     }
-
     test_cases
 }

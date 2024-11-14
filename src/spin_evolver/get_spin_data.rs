@@ -1,6 +1,3 @@
-// This project is open for educational and personal use only.
-// No warranty is provided, and this is not an official product.
-// ------------------------------------------------------------
 use crate::spin_data::spin_data::SpinData;
 use crate::spin_evolver::spin_evolver::SpinEvolverClass;
 use std::f64::consts::PI;
