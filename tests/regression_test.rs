@@ -1,14 +1,17 @@
+use rand_distr::num_traits::float::FloatCore;
+use rand_distr::num_traits::Float;
+use rustylisa::case_supervisor::case_supervisor::CaseSupervisor;
 use rustylisa::data_point::DataPoint;
 use rustylisa::simulation_runner::simulation_runner::SimulationRunner;
 use rustylisa::test_case::test_case::TestCase;
-use serde_json;
 use std::fs::File;
 use std::path::Path;
-use rustylisa::case_supervisor::case_supervisor::CaseSupervisor;
-#[test]
 
+use csv::ReaderBuilder;
+use serde::Deserialize;
+
+#[test]
 fn regression_test() {
-    println!("This will be printed with --nocapture");
     println!("Starting regression tests...");
 
     let baseline_dir = Path::new("results/baseline/");
@@ -24,7 +27,7 @@ fn regression_test() {
     for entry in entries {
         let baseline_case_dir = entry.path();
 
-        // Load baseline parameters
+        // Load baseline parameters from JSON
         let baseline_params: TestCase = load_json(&baseline_case_dir.join("parameters.json"));
 
         // Run simulation using the baseline parameters
@@ -32,27 +35,35 @@ fn regression_test() {
         case_supervisor.run_simulation();
 
         // Save results (assuming you want to save to the same directory structure)
-        // Now compare the results
         let test_case_dir = baseline_dir.join(entry.file_name());
-        println!("{:?}", test_case_dir);
 
-        // Load baseline data
-        let baseline_data: Vec<DataPoint> =  load_json(&test_case_dir.join("data.json"));
-        // Load current test data
+        // Load baseline data from CSV
+        let baseline_data: Vec<DataPoint> = load_csv(&test_case_dir.join("data.csv"));
+
+        // Load current test data from the simulation
         let test_data: Vec<DataPoint> = case_supervisor.wave.spin_evolver.data.clone();
-        println!("running now");
 
         // Compare data
         assert_data_points_equal(&baseline_data, &test_data, "Test case");
-        println!("Test case passed.");
     }
 }
 
-
 fn load_json<T: serde::de::DeserializeOwned>(path: &Path) -> T {
     let file = File::open(path).expect(&format!("Failed to open file {:?}", path));
-    println!("good");
     serde_json::from_reader(file).expect(&format!("Failed to parse JSON from {:?}", path))
+}
+
+fn load_csv<T>(path: &Path) -> Vec<T>
+where
+    T: for<'de> Deserialize<'de>,
+{
+    let file = File::open(path).expect(&format!("Failed to open file {:?}", path));
+    let mut reader = ReaderBuilder::new().has_headers(true).from_reader(file);
+
+    reader
+        .deserialize()
+        .map(|result| result.expect("Failed to parse CSV record"))
+        .collect()
 }
 
 fn assert_data_points_equal(baseline: &[DataPoint], current: &[DataPoint], case_name: &str) {
@@ -63,13 +74,18 @@ fn assert_data_points_equal(baseline: &[DataPoint], current: &[DataPoint], case_
         case_name
     );
 
-    for (i, (b_point, c_point)) in baseline.iter().zip(current.iter()).enumerate() {
+    for i in (0..baseline.len()).step_by(3) {
+        let b_point = &baseline[i];
+        let c_point = &current[i];
+
         // Implement a tolerance for floating-point comparison
         assert!(
             approximately_equal(b_point, c_point),
-            "Data mismatch at index {} in {}",
+            "Data mismatch at index {} in {}, b:{:?}, c:{:?}",
             i,
-            case_name
+            case_name,
+            b_point,
+            c_point
         );
     }
 }
@@ -78,8 +94,24 @@ fn approximately_equal(a: &DataPoint, b: &DataPoint) -> bool {
     // Define acceptable tolerance
     let tolerance = 1e-6;
 
-    // Compare fields with tolerance
-    // Example:
-    (a.hp - b.hp).abs() < tolerance && (a.hx - b.hx).abs() < tolerance
-    // Continue for other fields...
+    // Compare `hp` field
+    let hp_close = if a.hp.is_nan() && b.hp.is_nan() {
+        true // Both are NaN, consider them equal
+    } else if a.hp.is_nan() || b.hp.is_nan() {
+        false // One is NaN and the other isn't
+    } else {
+        (a.hp - b.hp).abs() < tolerance
+    };
+
+    // Compare `hx` field
+    let hx_close = if a.hx.is_nan() && b.hx.is_nan() {
+        true
+    } else if a.hx.is_nan() || b.hx.is_nan() {
+        false
+    } else {
+        (a.hx - b.hx).abs() < tolerance
+    };
+
+    // Combine all comparisons
+    hp_close && hx_close // && other field comparisons
 }

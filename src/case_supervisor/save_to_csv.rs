@@ -1,45 +1,34 @@
 use crate::case_supervisor::case_supervisor::CaseSupervisor;
 use std::fs::File;
-use std::io::{BufWriter, Write};
-
-use serde_json::to_writer_pretty;
 
 impl CaseSupervisor {
-    pub fn save_to_json(&self, filename: &str) {
+    pub fn save_to_csv(&self, filename: &str) {
         let file = File::create(filename).expect("Could not create file");
-        to_writer_pretty(file, &self.wave.spin_evolver.data).expect("Could not write data to JSON");
+        let mut wtr = csv::Writer::from_writer(file);
+        for data_point in &self.wave.spin_evolver.data {
+            wtr.serialize(data_point)
+                .expect("Could not write data to CSV");
+        }
+        wtr.flush().expect("Could not flush CSV writer");
     }
+
+    pub fn save_parameters_to_json(&self, filename: &str) {
+        let file = File::create(filename).expect("Could not create file");
+        serde_json::to_writer_pretty(file, &self.case).expect("Could not write parameters to JSON");
+    }
+
     pub fn save_results(&self, case_index: usize) -> std::io::Result<()> {
         let results_dir = format!("results/test_cases/case_{}/", case_index);
         std::fs::create_dir_all(&results_dir)?;
 
-        // Save simulation data to JSON
-        let data_path = format!("{}data.json", results_dir);
-        self.save_to_json(&data_path);
+        // Save simulation data to CSV
+        let data_path = format!("{}data.csv", results_dir);
+        self.save_to_csv(&data_path);
 
         // Save parameters to JSON
         let params_path = format!("{}parameters.json", results_dir);
-        let params_file = File::create(params_path)?;
-        serde_json::to_writer_pretty(params_file, &self.case)?;
+        self.save_parameters_to_json(&params_path);
 
         Ok(())
-    }
-
-    pub fn save_to_csv(&self) {
-        let file = File::create("data.csv").expect("Could not create file");
-        let mut writer = BufWriter::new(file);
-
-        // Write headers if the file is empty
-        writeln!(writer, "Time,HP,HX,Torb,NSteps").expect("Could not write headers");
-
-        // Write all data points
-        for data_point in self.wave.spin_evolver.data.iter() {
-            writeln!(
-                writer,
-                "{},{},{},{},{}",
-                data_point.time, data_point.hp, data_point.hx, data_point.torb, data_point.n_step
-            )
-            .expect("Could not write data point");
-        }
     }
 }

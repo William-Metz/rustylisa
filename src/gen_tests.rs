@@ -1,8 +1,26 @@
+use crate::simulation_runner::simulation_runner::SimulationRunner;
 use crate::test_case::test_case::TestCase;
 use rand::prelude::*;
 use rand_distr::Uniform;
+use std::sync::Arc;
+use std::usize;
+use tokio::runtime::Runtime;
 
-pub fn generate_test_cases(num_cases: usize) -> Vec<TestCase> {
+pub fn create_baseline(num: usize) {
+    let runtime = Arc::new(Runtime::new().expect("Failed to create Tokio runtime"));
+
+    let test_cases = generate_test_cases(num); // Generate test cases
+    let simulation_runner = SimulationRunner::new(test_cases, runtime.clone());
+    let monitor_handle = simulation_runner.run_all_simulations(true);
+
+    // Wait for all tasks to finish running
+    runtime.block_on(async {
+        monitor_handle.await.expect("Monitoring task panicked");
+    });
+
+    println!("All simulations are complete.");
+}
+fn generate_test_cases(num_cases: usize) -> Vec<TestCase> {
     let mut test_cases = Vec::with_capacity(num_cases);
     let mut rng = rand::thread_rng();
     // Mass distribution (log-uniform for wide range)
@@ -59,7 +77,7 @@ pub fn generate_test_cases(num_cases: usize) -> Vec<TestCase> {
         let rho_0 = 0.0; //get back to
         let detectors = 1; //get back to
         let delta_t = 50.0;
-        let duration = 10.0;
+        let duration = 1.0;
 
         // Create TestCase
         let test_case = TestCase::new(
