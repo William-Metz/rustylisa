@@ -8,7 +8,7 @@ use crate::simulation_runner::simulation_runner::SimulationRunner;
 use crate::wave_generator_app::view::View;
 
 pub struct WaveGeneratorApp {
-    pub runner: SimulationRunner, // Replace individual fields with a runner
+    pub runner: SimulationRunner,
     pub selected_tab: usize,
     pub current_view: View,
     pub simulations_start_time: Option<Instant>,

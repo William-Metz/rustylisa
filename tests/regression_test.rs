@@ -16,7 +16,6 @@ fn regression_test() {
 
     let baseline_dir = Path::new("results/baseline/");
 
-    // Collect all test case directories from the baseline directory
     let entries = baseline_dir
         .read_dir()
         .expect("Failed to read baseline directory")
@@ -34,11 +33,10 @@ fn regression_test() {
         let mut case_supervisor = CaseSupervisor::new(baseline_params.clone());
         case_supervisor.run_simulation();
 
-        // Save results (assuming you want to save to the same directory structure)
-        let test_case_dir = baseline_dir.join(entry.file_name());
+        let baseline_dir = baseline_dir.join(entry.file_name());
 
         // Load baseline data from CSV
-        let baseline_data: Vec<DataPoint> = load_csv(&test_case_dir.join("data.csv"));
+        let baseline_data: Vec<DataPoint> = load_csv(&baseline_dir.join("data.csv"));
 
         // Load current test data from the simulation
         let test_data: Vec<DataPoint> = case_supervisor.wave.spin_evolver.data.clone();

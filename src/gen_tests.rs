@@ -23,8 +23,8 @@ pub fn create_baseline(num: usize) {
 fn generate_test_cases(num_cases: usize) -> Vec<TestCase> {
     let mut test_cases = Vec::with_capacity(num_cases);
     let mut rng = rand::thread_rng();
-    // Mass distribution (log-uniform for wide range)
 
+    // Mass distribution (log-uniform for wide range)
     let min_mass: f32 = 2.0;
     let max_mass: f32 = 1_000_000.0;
     let log_min_mass = min_mass.ln();
@@ -73,9 +73,9 @@ fn generate_test_cases(num_cases: usize) -> Vec<TestCase> {
 
         let pn_order = pn_order_dist.sample(&mut rng);
 
-        // Constants (define these or sample if variable)
-        let rho_0 = 0.0; //get back to
-        let detectors = 1; //get back to
+        let rho_0 = angle_dist.sample(&mut rng);
+        // Constants for now
+        let detectors = 1;
         let delta_t = 50.0;
         let duration = 1.0;
 

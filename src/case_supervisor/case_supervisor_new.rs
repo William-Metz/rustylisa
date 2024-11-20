@@ -4,7 +4,6 @@ use crate::wave_builder::wave_builder::WaveBuilder;
 impl CaseSupervisor {
     // Constructor function to initialize the struct
     pub fn new(case: TestCase) -> CaseSupervisor {
-        //        let delta_tau_r = case.delta_t / case.GM;
         let delta_tau = 0.0;
         let wave = WaveBuilder::new(&case);
         CaseSupervisor {
