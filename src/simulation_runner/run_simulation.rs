@@ -1,7 +1,6 @@
 use crate::case_supervisor::case_supervisor::CaseSupervisor;
 use crate::simulation_runner::simulation_runner::SimulationRunner;
 use std::sync::{atomic::Ordering, Arc};
-use std::time::Instant;
 
 impl SimulationRunner {
     pub fn run_simulation(&self, case_index: usize, savedata: bool) {

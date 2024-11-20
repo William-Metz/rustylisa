@@ -1,4 +1,10 @@
 use crate::spin_data::spin_data::SpinData;
+impl Default for SpinData {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl SpinData {
     pub fn new() -> Self {
         SpinData {
